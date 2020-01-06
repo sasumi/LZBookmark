@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>LZBookmark</title>
+	<link rel="stylesheet" href="assert/css/popup.css">
+	<script src="assert/js/jquery-1.8.3.min.js"></script>
+</head>
+<body>
+<div class="manager-op">
+	<input type="search" name="" placeholder="Search Keywords" style="width:200px;">
+	<span class="link iconfont icon-add" id="add-btn">Add</span>
+	<dl class="drop-list drop-list-left">
+		<dt>
+			<span class="link iconfont icon-maintance" id="manager-btn">Mgr</span>
+		</dt>
+		<dd>
+			<span id="remove404-btn" class=" iconfont icon-cleanup">Remove 404 items</span>
+			<span id="remove-empty-folder-btn" class="iconfont icon-cleanup">Remove empty folder</span>
+			<span id="merge-same-btn" class="iconfont icon-merge">Merge same items</span>
+			<span id="merge-similar-btn" class="iconfont icon-merge">Merge Similar items</span>
+		</dd>
+	</dl>
+</div>
+
+<ul class="bookmark-tree" id="bookmark-tree">
+	<li>
+		<a href="" class="remark">Baidu.com</a>
+		<span class="url">http://www.baidu.com</span>
+		<span class="op">
+			<span class="link edit-btn">Edit</span>
+			<span class="link remove-btn">Remove</span>
+		</span>
+	</li>
+</ul>
+
+<script src="assert/js/lib.js"></script>
+<script src="assert/js/popup.js"></script>
+</body>
+</html>

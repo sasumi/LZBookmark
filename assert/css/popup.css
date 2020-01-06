@@ -1,0 +1,15 @@
+@charset "UTF-8";
+@import "reset.css";
+@import "form.css";
+@import "global.css";
+@import "com.css";
+@import "tree.css";
+
+body {padding:10px;}
+.manager-op {margin-bottom:0.5em;padding:0.5em 0;border-bottom:1px solid #ddd;display: flex;}
+.manager-op>span {margin-right: 10px;}
+
+#search-form legend {display:none;}
+#search-form input[type=search] {display:block; width:100%;}
+#search-form fieldset {position:relative;}
+#search-form input[type=submit] {position:absolute; right:0; top:0;}

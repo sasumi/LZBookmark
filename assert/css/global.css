@@ -1,0 +1,35 @@
+@charset "UTF-8";
+@import "http://at.alicdn.com/t/font_1598434_4h3rbffhndy.css";
+
+:root {
+	--color:#1a73e8;
+	--color-rgb:26, 115, 232;
+	--light-shadow:1px 1px 3px #dddddd;
+	--dark-shadow: 1px 1px 8px #565656;
+	--glow-shadow:1px 1px 10px rgba(var(--color-rgb), 0.5);
+	--font-family:Helvetica Neue, Helvetica, PingFang SC, Tahoma, Arial, sans-serif;
+	--element-radius: 3px;
+}
+:root {--iconfont:"iconfont", var(--font-family);}
+
+html {background-color:#fff}
+body {background-color: #fff;color:#333;}
+
+.page-iframe {background-color:#fff;}
+
+a, .link {color:#333; text-decoration:none; cursor:pointer;}
+a:hover, .link:hover {color:var(--color) !important;}
+.fore-color {color:var(--color) !important;}
+
+.iconfont {font-size:1em;font-family:var(--iconfont);}
+.iconfont:before {margin-right:0.2em;}
+
+::-webkit-scrollbar {width:8px; height:12px }
+::-webkit-scrollbar-button:vertical { display:none }
+::-webkit-scrollbar-track:vertical { background-color:black }
+::-webkit-scrollbar-track-piece { background:#ffffff }
+::-webkit-scrollbar-thumb:vertical { background-color:#8e8e8e; border-radius:5px}
+::-webkit-scrollbar-thumb:vertical:hover { background-color:#3b3b3b }
+::-webkit-scrollbar-corner:vertical { background-color:#535353 }
+::-webkit-scrollbar-thumb:horizontal{ background-color:#8e8e8e; border-radius:5px}
+::-webkit-scrollbar-thumb:horizontal:hover { background-color:#3b3b3b }
