@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-.bookmark-tree { font-size:14px; max-height:400px; overflow-y:auto; max-width:400px;}
+.bookmark-tree {font-size:14px; min-height:400px; max-height:calc(100vh - 80px); overflow-y:auto;}
 
 .bookmark-tree,
 .bookmark-tree ul,

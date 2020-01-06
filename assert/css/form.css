@@ -63,7 +63,17 @@ input[type=number],
 input[type=url],
 input[type=email],
 input[type=password],
-input[type=search] {height:30px;line-height:27px;padding:0 0.5em;box-sizing:border-box;border:none;outline:none;width:200px;font-family:var(--font-family);background: #eee9;}
+input[type=search] {height:30px;line-height:27px;padding:0 0.5em;box-sizing:border-box;border:none;outline:none;width:200px;font-family:var(--font-family);background: #ffffff21;}
+
+dialog select,
+dialog textarea,
+dialog input[type=text],
+dialog input[type=date],
+dialog input[type=number],
+dialog input[type=url],
+dialog input[type=email],
+dialog input[type=password],
+dialog input[type=search] {color: white;}
 
 textarea {height:60px; resize:vertical; min-height:30px; min-width:200px;}
 
@@ -85,7 +95,6 @@ input[type=email]:hover,
 input[type=password]:hover,
 input[type=search]:hover {box-shadow:var(--light-shadow); outline:none;}
 
-dialog select:hover,
 dialog textarea:hover,
 dialog input[type=text]:hover,
 dialog input[type=date]:hover,
@@ -93,33 +102,12 @@ dialog input[type=number]:hover,
 dialog input[type=url]:hover,
 dialog input[type=email]:hover,
 dialog input[type=password]:hover,
-dialog input[type=search]:hover {box-shadow:var(--dark-shadow)}
+dialog input[type=search]:hover {box-shadow:var(--dark-shadow);background-color: #c3c3c387;}
+dialog select:hover {color:black;}
 
 input[type=number] {width:80px; text-align:center;}
 
-.frm {padding:10px;}
-.frm legend {font-size:20px; color:var(--color); display:block; margin-bottom:10px;}
-.frm select,
-.frm input[type=text],
-.frm input[type=url],
-.frm input[type=date],
-.frm input[type=password],
-.frm input[type=button],
-.frm input[type=submit] {display:inline-block; box-sizing:border-box; height:35px; padding:0 0.75em; font-size:14px;}
-.frm input[type=submit] {padding:0 2em; margin-right:1em;}
+.form-item li {margin-bottom:0.5em;}
+.form-item.full-item input {width:100%;}
 
 form .require-flag {color:red;}
-
-.frm-tbl {/* width:100%; */border-collapse:collapse;}
-.frm-tbl>tbody>tr>td {padding:5px 10px;}
-.frm-tbl>tbody>tr>th {padding:10px 1em 5px 10px; text-align:left; width:50px; white-space:nowrap; vertical-align:top;}
-
-.page-search-form{padding:0.5em 0}
-.page-search-form input.date-txt{width:110px;}
-.page-search-form select {max-width:150px;}
-.page-search-form .search-keyword-list {box-sizing:border-box; resize:none; height:27px; vertical-align:top; width:220px; overflow-y:auto; overflow-x:hidden; transition:height 0.1s linear;}
-.page-search-form .search-keyword-list:focus,
-.page-search-form .search-keyword-list.active {height:100px;}
-
-.operate-bar {padding: 0.5em 0 0;}
-.operate-row {text-align:center; padding:1em;}
