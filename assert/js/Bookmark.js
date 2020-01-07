@@ -83,7 +83,7 @@ class Bookmark {
 		let last_level = 0;
 		let tmp_titles = {};
 		plain_tree_nodes.forEach((item)=>{
-			if(Bookmark.resolveType(item) !== Bookmark.TYPE_FOLDER){
+			if(!Bookmark.isFolder(item)){
 				return;
 			}
 			if(item.level !== last_level){
@@ -102,20 +102,27 @@ class Bookmark {
 		return ret;
 	};
 
-	static getChildren = (plain_tree_nodes, parentId)=>{
+	static getFaviconHtml(item){
+		return '<span class="favicon" style=\'background-image:url("chrome://favicon/size/16@1x/'+item.url+'\');"></span>';
+	}
+
+	static getChildren = (plain_tree_nodes, parentId, recursive = false, filter = ()=>{})=>{
 		let ret = [];
 		plain_tree_nodes.forEach((item)=>{
-			if(item.parentId === parentId){
+			if(item.parentId === parentId && filter(item) !== false){
 				ret.push(item);
 			}
 		});
+		if(recursive){
+			//todo
+		}
 		return ret;
 	};
 
 	static getFolderSelection = (plain_nodes)=>{
 		let html = '<select>';
 		plain_nodes.forEach((item)=>{
-			if(Bookmark.resolveType(item) === Bookmark.TYPE_FOLDER){
+			if(Bookmark.isFolder(item)){
 				let tab = Util.strRepeat('&nbsp;',item.level*4);
 				html += `<option value="${item.id}">${tab} ${Util.escape(item.title)}</option>`;
 			}
@@ -126,6 +133,10 @@ class Bookmark {
 	static resolveType = (item)=>{
 		return item.url ? Bookmark.TYPE_LINK : Bookmark.TYPE_FOLDER;
 	};
+
+	static isFolder(item){
+		return Bookmark.resolveType(item) === Bookmark.TYPE_FOLDER;
+	}
 }
 
 export {Bookmark};

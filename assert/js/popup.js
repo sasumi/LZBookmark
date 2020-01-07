@@ -18,13 +18,16 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 			if(type === Bookmark.TYPE_FOLDER){
 				sub_html += `<span class="fold">${h(title)} <span class="cnt">`+item.children.length+`</span></span>`;
 			} else {
-				let favicon_html = '<span class="favicon" style=\'background-image:url("chrome://favicon/size/16@1x/'+item.url+'\');"></span>';
-				sub_html += `<a href="${h(item.url)}" target="_blank" title="${h(item.title+"\n"+item.url)}" class="remark">${favicon_html} ${h(item.title)}</a>`;
+				sub_html += `<a href="${h(item.url)}" target="_blank" title="${h(item.title+"\n"+item.url)}" class="remark">${Bookmark.getFaviconHtml(item)} ${h(item.title)}</a>`;
 			}
-			sub_html += `<span class="op">
+			sub_html += `
+					<dl class="drop-list drop-list-left">
+						<dt><span class="iconfont icon-option-vertical"></span></dt>
+						<dd>
 							<span class="link edit-btn">Edit</span>
 							<span class="link remove-btn">Remove</span>
-						</span></div>`;
+						</dd>
+					</dl></div>`;
 
 			if(type === Bookmark.TYPE_FOLDER && children_count){
 				sub_html += `<ul>`+get_tree_html(item.children, level+1)+`</ul>`;
@@ -89,6 +92,12 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 		$item.find('li').addClass('collapsed');
 	});
 
+	$tree.delegate('.edit-btn', 'click', function(){
+		let id = $(this).closest('li').data('id');
+		let item = plain_tree_nodes[id];
+		update_bookmark_ui(item);
+	});
+
 	$tree.delegate('.remove-btn', 'click', function(){
 		let $li = $(this).closest('li');
 		let type = $li.data('type');
@@ -99,7 +108,15 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 				$li.remove();
 			});
 		}
-		show_confirm('Confirm to remove folder?', '', function(){
+
+		let sub_links = Bookmark.getChildren(plain_tree_nodes, id, true, (item)=>{return !Bookmark.isFolder(item);});
+		let sub_links_html = 'Children links found:<ul class="simple-list">';
+		sub_links.forEach((item)=>{
+			sub_links_html += `<li>${Bookmark.getFaviconHtml(item)} <a href="${h(item.url)}" target="_blank">${h(item.title)}</a></li>`;
+		});
+		sub_links_html += `</ul>`;
+
+		show_confirm('Confirm to remove folder?',sub_links_html, function(){
 			chrome.bookmark.removeTree(id, function(){
 				$li.remove();
 			});
@@ -121,7 +138,7 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 			if(bookmark.id){
 				chrome.bookmarks.update(bookmark.id, {title:title, url:url}, function(){
 					let $node = $tree.find('li[data-id='+bookmark.id+']');
-					if(Bookmark.resolveType(bookmark) === Bookmark.TYPE_FOLDER){
+					if(Bookmark.isFolder(bookmark)){
 						let org_cnt = $node.find('.cnt').text();
 						$node.find('.fold').html(h(title) + (org_cnt ? `<span class="cnt">${org_cnt}</span>` : ''));
 					} else {

@@ -26,16 +26,14 @@
 .bookmark-tree .remark {color: #6d6dab;}
 .bookmark-tree .fold:before {content:"\e696";font-family:var(--iconfont);margin-right:0.5em;}
 .bookmark-tree .collapsed>.item-wrap>.fold:before {content:"\e600"}
-.bookmark-tree .favicon {display:inline-block; vertical-align:middle; height:16px; width:16px; margin-right:0.5em; background-repeat:no-repeat}
-
 .bookmark-tree .cnt {color:#ccc;display:inline-block;margin: 0 0 0 5px;vertical-align: middle;font-size: 10px;}
 .bookmark-tree .cnt:before {content:"("}
 .bookmark-tree .cnt:after {content:")"}
 
-.bookmark-tree .op {position: absolute;right: 0;top: 3px;opacity:0.2;transition:all 0.2s linear;}
-.bookmark-tree .item-wrap:hover>.op {opacity:1}
+.bookmark-tree .drop-list {position: absolute;right:3px;top:3px;opacity:0.2;transition:all 0.2s linear;}
+.bookmark-tree .item-wrap:hover>.drop-list {opacity:1}
 .bookmark-tree .edit-btn,
-.bookmark-tree .remove-btn{display:inline-block;color: gray;margin-left: 5px;width: 15px;overflow: hidden;}
+.bookmark-tree .remove-btn{}
 .bookmark-tree .edit-btn:before,
 .bookmark-tree .remove-btn:before {content:"\e60f"; font-family:var(--iconfont); margin-right:0.2em;}
 .bookmark-tree .remove-btn:before {content:"\e61a"}

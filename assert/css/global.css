@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "http://at.alicdn.com/t/font_1598434_4oryz7rvc6p.css";
+@import "http://at.alicdn.com/t/font_1598434_2zoaep62mej.css";
 
 :root {
 	--color:#1a73e8;
@@ -20,7 +20,7 @@ body {background-color: #fff;color:#333;height: 100%; box-sizing:border-box}
 a, .link {color:#333; text-decoration:none; cursor:pointer;}
 a:hover, .link:hover {color:var(--color) !important;}
 .fore-color {color:var(--color) !important;}
-
+.favicon {display:inline-block; vertical-align:middle; height:16px; width:16px; margin-right:0.5em; background-repeat:no-repeat}
 .iconfont {font-size:1em;font-family:var(--iconfont);}
 .iconfont:before {margin-right:0.2em;}
 
