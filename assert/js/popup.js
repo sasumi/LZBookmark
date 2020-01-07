@@ -81,7 +81,6 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 	};
 
 	$tree.html(get_tree_html(tree_nodes, 0));
-
 	let plain_tree_nodes = Bookmark.getPlainTreeNodes(tree_nodes);
 
 	$tree.delegate('.fold', 'click', function(){
@@ -93,19 +92,18 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 	$tree.delegate('.remove-btn', 'click', function(){
 		let $li = $(this).closest('li');
 		let type = $li.data('type');
-		let id = $li.data('id');
+		let id = $li.data('id')+"";
 		let children_count = $li.data('children-count');
-		if(type === Bookmark.TYPE_FOLDER && !children_count){
-			console.log('remove empty fold');
-			chrome.bookmarks.remove(id+"", function(){
-				let only = $li.parent().children().length === 1;
-				if(only){
-					$li.parent().remove();
-				}else{
-					$li.remove();
-				}
+		if(type === Bookmark.TYPE_LINK || !children_count){
+			chrome.bookmarks.remove(id, function(){
+				$li.remove();
 			});
 		}
+		show_confirm('Confirm to remove folder?', '', function(){
+			chrome.bookmark.removeTree(id, function(){
+				$li.remove();
+			});
+		})
 	});
 
 	const update_bookmark_ui = (bookmark = {title:"", url:"", id:null}, on_success)=>{
