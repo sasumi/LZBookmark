@@ -26,11 +26,12 @@
 .drop-list:not(.muloperate-disabled):hover dt.btn:after {border-bottom-color:black;}
 .drop-list:not(.muloperate-disabled):hover dt.btn-weak:after {border-bottom-color:gray;}
 
-dialog {display:block;border:none;box-sizing:border-box;width:100%;padding:20px;background-color: #ffffff1a;z-index:1;position:fixed;top:30px;}
-dialog::backdrop {position:fixed;top:0;left:0;right:0;bottom:0;background:#333b;}
-dialog .dialog-ti {font-size:20px; font-weight:normal; margin-bottom:1em; padding-bottom:0.5em;color: white}
-dialog .dialog-ctn {;color: white}
+dialog {display:block;border:none;box-sizing:border-box;width: 98%;padding:20px;/* background-color: #ffffff1a; */z-index:1;position:fixed;box-shadow: 1px 1px 100px #444;top:30px;}
+dialog::backdrop {position:fixed;top:0;left:0;right:0;bottom:0;background: #333b;}
+dialog .dialog-ti {font-size:20px; font-weight:normal; margin-bottom:1em; padding-bottom:0.5em}
+dialog .dialog-ctn {;}
 dialog .dialog-op {padding-top:0.5em;}
 dialog .dialog-ti,
 dialog .dialog-ctn,
-dialog .dialog-op {max-width:400px; margin:0 auto;}
+dialog .dialog-op {max-width: 600px;margin:0 auto;}
+dialog .dialog-op .btn {margin-right:0.5em;}

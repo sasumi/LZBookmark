@@ -18,18 +18,20 @@
 			<span class="link iconfont icon-maintance" id="manager-btn">Mgr</span>
 		</dt>
 		<dd>
-			<span id="remove404-btn" class=" iconfont icon-cleanup">Remove 404 items</span>
-			<span id="cleanup-folder-btn" class="iconfont icon-cleanup">Clean up folder</span>
-			<span id="cleanup-item-btn" class="iconfont icon-cleanup">Clean up item</span>
-			<span id="merge-similar-btn" class="iconfont icon-merge">Merge Similar items</span>
+			<span class="iconfont icon-sort">Sorting</span>
+			<span class="sep"></span>
+			<a href="popup.html#act=remove404" target="_blank" class=" iconfont icon-cleanup">Remove 404 items</a>
+			<a href="popup.html#act=cleanup_folder" target="_blank" class="iconfont icon-cleanup">Clean up folder</a>
+			<a href="popup.html#act=cleanup_item" target="_blank" class="iconfont icon-cleanup">Clean up item</a>
+			<a href="popup.html#act=merge_similar" target="_blank" class="iconfont icon-merge">Merge Similar items</a>
+			<span class="sep"></span>
+			<a href="options.html" target="_blank">Options</a>
 		</dd>
 	</dl>
 </div>
 
 <ul class="bookmark-tree" id="bookmark-tree">
 </ul>
-
-<script src="assert/js/lib.js"></script>
-<script src="assert/js/popup.js"></script>
+<script src="assert/js/popup.js" type="module"></script>
 </body>
 </html>

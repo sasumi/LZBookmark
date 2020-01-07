@@ -10,8 +10,6 @@ input:-webkit-autofill:focus {-webkit-box-shadow: 0 0 0 50px white inset;-webkit
 [type=submit],
 [type=reset] {display:inline-block; height:30px; line-height:30px; padding:0 1.2em; border:1px solid #ccc; border-radius:var(--element-radius); border-right-color:#aaa; border-bottom-color:#aaa; background-image:linear-gradient(#f6f6f6, #ddd); cursor:pointer; box-shadow:2px 2px 5px transparent; transition:all 0.1s linear;}
 
-select {border:1px solid #aaa; border-radius:var(--element-radius); border-right-color:#ccc; border-bottom-color:#ccc;}
-
 .btn:not([disabled]):focus,
 .btn:not([disabled]):hover,
 [type=button]:not([disabled]):hover,
@@ -21,16 +19,6 @@ select {border:1px solid #aaa; border-radius:var(--element-radius); border-right
 [type=submit]:not([disabled]):focus,
 [type=reset]:not([disabled]):focus,
 select:not([disabled]):focus {box-shadow:var(--light-shadow); outline:none;}
-
-dialog .btn:not([disabled]):focus,
-dialog .btn:not([disabled]):hover,
-dialog [type=button]:not([disabled]):hover,
-dialog [type=submit]:not([disabled]):hover,
-dialog [type=reset]:not([disabled]):hover,
-dialog [type=button]:not([disabled]):focus,
-dialog [type=submit]:not([disabled]):focus,
-dialog [type=reset]:not([disabled]):focus,
-dialog select:not([disabled]):focus {box-shadow:var(--dark-shadow)}
 
 .btn[disabled],
 .btn-disabled,
@@ -46,14 +34,14 @@ select[disabled] {border-color:#cccccc !important; cursor:default !important;col
 .btn-primary:not([disabled]),
 [type=submit]:not([disabled]),
 [type=submit]:not([disabled]):focus,
-.btn-primary:not([disabled]):focus {background-image:linear-gradient(#1a75f2, #1a70e1); color:white; border:1px solid var(--color); outline:none;}
+.btn-primary:not([disabled]):focus {background-image:linear-gradient(#1a75f2, #1a70e1);color:white;border:1px solid var(--color);outline:none;text-shadow: none;}
 
 .btn-primary:not([disabled]):hover,
 [type=submit]:not([disabled]):hover,
-.btn-primary:not([disabled]):hover {background-image:linear-gradient(#1a79ff, #1a79f9); color:white;}
+.btn-primary:not([disabled]):hover {background-image:linear-gradient(#1a79ff, #1a79f9); color:white; box-shadow:var(--light-shadow)}
 
-.btn-outline {background:#fff; border:1px solid #ccc; border-radius:var(--element-radius); padding-left:0.5em; padding-right:0.5em;}
-.btn-outline:hover {border-color:var(--color)}
+.btn-outline {background:#fff;border: 1px solid #aaa;border-radius:var(--element-radius);padding-left:0.5em;padding-right:0.5em;}
+.btn-outline:hover {border-color:var(--color);color: var(--color);}
 
 select,
 textarea,
@@ -63,17 +51,17 @@ input[type=number],
 input[type=url],
 input[type=email],
 input[type=password],
-input[type=search] {height:30px;line-height:27px;padding:0 0.5em;box-sizing:border-box;border:none;outline:none;width:200px;font-family:var(--font-family);background: #ffffff21;}
+input[type=search] {height:30px;line-height:27px;padding:0 0.5em;box-sizing:border-box;  outline:none;width:200px;font-family:var(--font-family);background: #ffffff21;}
 
-dialog select,
-dialog textarea,
-dialog input[type=text],
-dialog input[type=date],
-dialog input[type=number],
-dialog input[type=url],
-dialog input[type=email],
-dialog input[type=password],
-dialog input[type=search] {color: white;}
+select,
+textarea,
+input[type=text],
+input[type=date],
+input[type=number],
+input[type=url],
+input[type=email],
+input[type=password],
+input[type=search] {border:none; border-bottom:1px solid #aaa;}
 
 textarea {height:60px; resize:vertical; min-height:30px; min-width:200px;}
 
@@ -93,21 +81,11 @@ input[type=number]:hover,
 input[type=url]:hover,
 input[type=email]:hover,
 input[type=password]:hover,
-input[type=search]:hover {box-shadow:var(--light-shadow); outline:none;}
+input[type=search]:hover {box-shadow: 0px 2px 1px 0px #cccccc7d;border-color:var(--color);outline:none;}
 
-dialog textarea:hover,
-dialog input[type=text]:hover,
-dialog input[type=date]:hover,
-dialog input[type=number]:hover,
-dialog input[type=url]:hover,
-dialog input[type=email]:hover,
-dialog input[type=password]:hover,
-dialog input[type=search]:hover {box-shadow:var(--dark-shadow);background-color: #c3c3c387;}
-dialog select:hover {color:black;}
+input[type=number] {width:80px;text-align:center;}
 
-input[type=number] {width:80px; text-align:center;}
-
-.form-item li {margin-bottom:0.5em;}
+.form-item li {margin-bottom: 1em;}
 .form-item.full-item input {width:100%;}
 
 form .require-flag {color:red;}

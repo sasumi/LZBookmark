@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "http://at.alicdn.com/t/font_1598434_4h3rbffhndy.css";
+@import "http://at.alicdn.com/t/font_1598434_4oryz7rvc6p.css";
 
 :root {
 	--color:#1a73e8;
@@ -12,8 +12,8 @@
 }
 :root {--iconfont:"iconfont", var(--font-family);}
 
-html {background-color:#fff}
-body {background-color: #fff;color:#333;}
+html {background-color:#fff; height:100%;}
+body {background-color: #fff;color:#333;height: 100%; box-sizing:border-box}
 
 .page-iframe {background-color:#fff;}
 

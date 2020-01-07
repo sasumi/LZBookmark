@@ -6,7 +6,7 @@
 @import "tree.css";
 
 body {padding:10px;}
-.manager-op {margin-bottom:0.5em;padding:0.5em 0;border-bottom:1px solid #ddd;display: flex;}
+.manager-op {margin-bottom:0.5em;padding:0.5em 0;/* border-bottom:1px solid #ddd; */display: flex;}
 .manager-op>.link {margin:0 10px;max-width: 50px;}
 .manager-op .drop-list {max-width: 65px;}
 .manager-op>* {flex:1;}
@@ -16,6 +16,17 @@ body {padding:10px;}
 #search-form fieldset {position:relative;}
 #search-form input[type=submit] {position:absolute; right:0; top:0;}
 
+.bookmark-checking-timeout {float:right;margin-top:-38px;color: gray;}
+.bookmark-checking-timeout input[type=number] {width:50px;}
+
 .bookmark-checking progress {display:block;width: 100%;margin: 5px 0;}
 .bookmark-checking .percent {float:right;}
-.bookmark-checking .current-site a {color:#ccc !important; display:inline-block; max-height:1.5em; overflow:hidden}
+.bookmark-checking .current-site {margin-bottom:5px; display:block;}
+.bookmark-checking .current-site a {color: var(--color);max-height:1.5em;overflow:hidden;display: inline-block;vertical-align: bottom;width: calc(100% - 70px);}
+
+.bookmark-checking-result-list {max-height:200px;overflow-y:auto;padding: 10px;border: 1px solid #ccc;}
+.bookmark-checking-result-list .err {color:red;padding-left: 0.5em;background: #ffe7e7;white-space: nowrap;}
+.bookmark-checking-result-list li {padding: 3px 30px 3px 0;position:relative;}
+.bookmark-checking-result-list li:hover,
+.bookmark-checking-result-list li:nth-child(even) {background-color:#eee;}
+.bookmark-checking-result-list .btn-remove {position:absolute;top:3px;right:5px;}
