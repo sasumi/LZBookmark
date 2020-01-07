@@ -139,200 +139,220 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 		});
 	};
 
-	$('#add-btn').click(function(){
-		update_bookmark_ui();
-	});
+	const do_action = ()=>{
+		let action = Util.getParam('act');
+		switch(action){
+			case 'sorting':
+				{
+					let html = '<div>Sorting By:</div><ul class="sorting-conditions">';
+					html += '<li>Type: <select><option>Folder First</option><option>Link First</option><option>As Default</option></select>';
+					html += '<li>Spell: <select><option>A-Z</option><option>Z-A</option><option>As Default</option></select>';
+					html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
+					html += '</ul>';
+					show_confirm('Sorting bookmarks', html, function($dlg){
 
-	let action = Util.getParam('act');
-	switch(action){
-		case 'remove404':
-			Util.removeHash();
-			{
-				let links = [];
-				plain_tree_nodes.forEach(function(item){
-					if(item.url){
-						links.push(item);
-					}
-				});
-				let total = links.length;
-				let html =
-					`<div class="bookmark-checking-timeout">Timeout: <input type="number" name="timeout" value="8" min="1" step="1"> Sec</div>
-				<div class="bookmark-checking run-info">
-					Progress: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
-					<progress max="${total}" value="0"></progress>
-					<span class="current-site" style="display:none;">Checking: <a href="" target="_blank"></a></span>
-				</div>`;
-
-				html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
-				html += '</ul>';
-				let op_html = `<span class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
-				op_html += `<span class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
-				op_html += `<span class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
-				op_html += '<span class="btn btn-outline btn-close">Close</span>';
-
-				show_dialog('Remove 404 bookmarks', html, op_html, function($dlg){
-					let $progress = $dlg.find('progress');
-					let $cnt = $dlg.find('.cnt');
-					let $percent = $dlg.find('.percent');
-					let $current = $dlg.find('.current-site');
-					let $error_list = $dlg.find('ul');
-					let $timeout_input = $dlg.find('input[name=timeout]');
-
-					let stop_sign = false;
-
-					let $start_btn = $dlg.find('.btn-start');
-					let $stop_btn = $dlg.find('.btn-stop');
-					let $delete_btn = $dlg.find('.btn-deletes');
-					let $close_btn = $dlg.find('.btn-close');
-
-					$close_btn.click(function(){
-						stop_sign = true;
-						$dlg.remove();
 					});
+				}
+				break;
 
-					$dlg.delegate('.btn-remove', 'click', function(){
-						let id = $(this).closest('li').find('input[name=fails]').val();
-						chrome.bookmarks.remove(id);
-						$(this).closest('li').remove();
-					});
+			case 'add':
+				update_bookmark_ui();
+				break;
 
-					$delete_btn.click(function(){
-						let $inputs = $error_list.find('input[name=fails]');
-						let count = $inputs.size();
-						if(!count){
-							alert('No item selected');
-							return;
-						}
-						if(confirm('Confirm to remove '+count+' bookmarks?')){
-							$inputs.each(function(){
-								chrome.bookmark.remove(this.value);
-							});
-							location.reload();
+			case 'remove404':
+				{
+					let links = [];
+					plain_tree_nodes.forEach(function(item){
+						if(item.url){
+							links.push(item);
 						}
 					});
+					let total = links.length;
+					let html =
+						`<div class="bookmark-checking-timeout">Timeout: <input type="number" name="timeout" value="8" min="1" step="1"> Sec</div>
+					<div class="bookmark-checking run-info">
+						Progress: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
+						<progress max="${total}" value="0"></progress>
+						<span class="current-site" style="display:none;">Checking: <a href="" target="_blank"></a></span>
+					</div>`;
 
-					$stop_btn.click(function(){
-						stop_sign = true;
-						$start_btn.show();
-						$stop_btn.hide();
-						$delete_btn.show();
-						$current.hide();
-						$timeout_input.removeAttr('disabled');
-					});
+					html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
+					html += '</ul>';
+					let op_html = `<span class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
+					op_html += `<span class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
+					op_html += `<span class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
+					op_html += '<span class="btn btn-outline btn-close">Close</span>';
 
-					$start_btn.click(function(){
-						$start_btn.hide();
-						$stop_btn.show();
-						$delete_btn.hide();
-						$current.show();
-						$timeout_input.attr('disabled', 'disabled');
-						let timeout = parseInt($timeout_input.val(), 10) * 1000;
-						let tmp = links;
-						let current_cnt = 0;
-						let do_check = function(item, on_item_finish){
-							if(!item || stop_sign){
+					show_dialog('Remove 404 bookmarks', html, op_html, function($dlg){
+						let $progress = $dlg.find('progress');
+						let $cnt = $dlg.find('.cnt');
+						let $percent = $dlg.find('.percent');
+						let $current = $dlg.find('.current-site');
+						let $error_list = $dlg.find('ul');
+						let $timeout_input = $dlg.find('input[name=timeout]');
+
+						let stop_sign = false;
+
+						let $start_btn = $dlg.find('.btn-start');
+						let $stop_btn = $dlg.find('.btn-stop');
+						let $delete_btn = $dlg.find('.btn-deletes');
+						let $close_btn = $dlg.find('.btn-close');
+
+						$close_btn.click(function(){
+							stop_sign = true;
+							$dlg.remove();
+						});
+
+						$dlg.delegate('.btn-remove', 'click', function(){
+							let id = $(this).closest('li').find('input[name=fails]').val();
+							chrome.bookmarks.remove(id);
+							$(this).closest('li').remove();
+						});
+
+						$delete_btn.click(function(){
+							let $inputs = $error_list.find('input[name=fails]');
+							let count = $inputs.size();
+							if(!count){
+								alert('No item selected');
 								return;
 							}
-							$current.find('a').attr('href', item.url).text(item.title);
-							Util.check404(item.url, function(is_success, message){
-								on_item_finish(item, is_success, message);
-								do_check(tmp.shift(), on_item_finish);
-							},timeout)
-						};
-						do_check(tmp.shift(), function(item, is_success, message){
-							current_cnt++;
-							$cnt.html(current_cnt);
-							$percent.html((Math.round(100*current_cnt/total)) + '%');
-							$progress.val(current_cnt);
-							if(!is_success){
-								$error_list.show();
-								let html = `<li> 
-											<input type="checkbox" name="fails" value="${item.id}" checked> 
-											<a href="${h(item.url)}" target="_blank">${h(item.title)}</a> 
-											<span class="err">${h(message)}</span>
-											<span class="btn-remove link iconfont icon-trash"></span>
-										</li>`;
-								$(html).prependTo($error_list);
+							if(confirm('Confirm to remove '+count+' bookmarks?')){
+								$inputs.each(function(){
+									chrome.bookmark.remove(this.value);
+								});
+								location.reload();
 							}
 						});
-					});
-				});
-			}
-			break;
 
-		case 'cleanup_folder':
-			Util.removeHash();
-			{
-				let empty_nodes = Bookmark.foundEmptyFolders(plain_tree_nodes);
-				let folders_to_merge = Bookmark.foundMergeFolders(plain_tree_nodes);
-				let html = '';
-				if(empty_nodes.length){
-					html += '<div>Empty folders found:</div>';
-					html += `<ul style="max-height:100px; overflow-y:scroll;">`;
-					empty_nodes.forEach((item)=>{
-						html += `<li><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.parentTitle)} / <span class="iconfont icon-fold">${h(item.title)}</span> </li>`;
-					});
-					html += `</ul>`;
-				}
-				if(folders_to_merge.length){
-					html += '<div>Same name folders to merge:</div>';
-					html += '<ul style="max-height:200px; overflow-y:auto;">';
-					folders_to_merge.forEach((tmp)=>{
-						let [item, to_id] = tmp;
-						html += `<li><input type="checkbox" name="moves" value="${item.id}" data-to-id="${to_id}" checked> <span class="iconfont icon-fold">${h(item.title)}</span></li>`
-					});
-					html += '</ul>';
-				}
+						$stop_btn.click(function(){
+							stop_sign = true;
+							$start_btn.show();
+							$stop_btn.hide();
+							$delete_btn.show();
+							$current.hide();
+							$timeout_input.removeAttr('disabled');
+						});
 
-				if(!html){
-					show_alert('Clean up folders', 'No empty bookmark folders found.');
-					return;
-				}
-				show_confirm('Clean up folders', html, function($dlg){
-					$dlg.find('input[name=deletes]:checked').each(function(){
-						chrome.bookmarks.remove(this.value);
-					});
-					$dlg.find('input[name=moves]:checked').each(function(){
-						let children = Bookmark.getChildren(plain_tree_nodes, this.value);
-						children.forEach((item)=>{
-							chrome.bookmarks.move(item.id, {
-								parentId: $(this).data('to-id')+""
+						$start_btn.click(function(){
+							$start_btn.hide();
+							$stop_btn.show();
+							$delete_btn.hide();
+							$current.show();
+							$timeout_input.attr('disabled', 'disabled');
+							let timeout = parseInt($timeout_input.val(), 10) * 1000;
+							let tmp = links;
+							let current_cnt = 0;
+							let do_check = function(item, on_item_finish){
+								if(!item || stop_sign){
+									return;
+								}
+								$current.find('a').attr('href', item.url).text(item.title);
+								Util.check404(item.url, function(is_success, message){
+									on_item_finish(item, is_success, message);
+									do_check(tmp.shift(), on_item_finish);
+								},timeout)
+							};
+							do_check(tmp.shift(), function(item, is_success, message){
+								current_cnt++;
+								$cnt.html(current_cnt);
+								$percent.html((Math.round(100*current_cnt/total)) + '%');
+								$progress.val(current_cnt);
+								if(!is_success){
+									$error_list.show();
+									let html = `<li> 
+												<input type="checkbox" name="fails" value="${item.id}" checked> 
+												<a href="${h(item.url)}" target="_blank">${h(item.title)}</a> 
+												<span class="err">${h(message)}</span>
+												<span class="btn-remove link iconfont icon-trash"></span>
+											</li>`;
+									$(html).prependTo($error_list);
+								}
 							});
 						});
-						chrome.bookmarks.remove(this.value);
 					});
-					location.reload();
-				});
-			}
-			break;
-
-		case 'cleanup_item':
-			Util.removeHash();
-			{
-				let same_url_nodes = Bookmark.foundSameUrlNodes(plain_tree_nodes);
-				let html = '';
-
-				if(!same_url_nodes.length){
-					show_alert('Clean up item', 'No duplicate bookmark items found.');
-					return;
 				}
+				break;
 
-				html += '<div>Duplicate bookmark found:</div>';
-				html += `<ul style="max-height:200px; overflow-y:auto;">`;
-				same_url_nodes.forEach((item)=>{
-					html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
-				});
-				html += '</ul>';
-				show_confirm('Clean up item', html, function($dlg){
-					$dlg.find('input[name=deletes]:checked').each(function(){
-						chrome.bookmarks.remove(this.value);
+			case 'cleanup_folder':
+				{
+					let empty_nodes = Bookmark.foundEmptyFolders(plain_tree_nodes);
+					let folders_to_merge = Bookmark.foundMergeFolders(plain_tree_nodes);
+					let html = '';
+					if(empty_nodes.length){
+						html += '<div>Empty folders found:</div>';
+						html += `<ul style="max-height:100px; overflow-y:scroll;">`;
+						empty_nodes.forEach((item)=>{
+							html += `<li><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.parentTitle)} / <span class="iconfont icon-fold">${h(item.title)}</span> </li>`;
+						});
+						html += `</ul>`;
+					}
+					if(folders_to_merge.length){
+						html += '<div>Same name folders to merge:</div>';
+						html += '<ul style="max-height:200px; overflow-y:auto;">';
+						folders_to_merge.forEach((tmp)=>{
+							let [item, to_id] = tmp;
+							html += `<li><input type="checkbox" name="moves" value="${item.id}" data-to-id="${to_id}" checked> <span class="iconfont icon-fold">${h(item.title)}</span></li>`
+						});
+						html += '</ul>';
+					}
+
+					if(!html){
+						show_alert('Clean up folders', 'No empty bookmark folders found.');
+						return;
+					}
+					show_confirm('Clean up folders', html, function($dlg){
+						$dlg.find('input[name=deletes]:checked').each(function(){
+							chrome.bookmarks.remove(this.value);
+						});
+						$dlg.find('input[name=moves]:checked').each(function(){
+							let children = Bookmark.getChildren(plain_tree_nodes, this.value);
+							children.forEach((item)=>{
+								chrome.bookmarks.move(item.id, {
+									parentId: $(this).data('to-id')+""
+								});
+							});
+							chrome.bookmarks.remove(this.value);
+						});
+						location.reload();
 					});
-					location.reload();
-				});
-			}
-			break;
-		case 'merge_similar':
-			break;
+				}
+				break;
 
-	}
+			case 'cleanup_item':
+				{
+					let same_url_nodes = Bookmark.foundSameUrlNodes(plain_tree_nodes);
+					let html = '';
+
+					if(!same_url_nodes.length){
+						show_alert('Clean up item', 'No duplicate bookmark items found.');
+						return;
+					}
+
+					html += '<div>Duplicate bookmark found:</div>';
+					html += `<ul style="max-height:200px; overflow-y:auto;">`;
+					same_url_nodes.forEach((item)=>{
+						html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
+					});
+					html += '</ul>';
+					show_confirm('Clean up item', html, function($dlg){
+						$dlg.find('input[name=deletes]:checked').each(function(){
+							chrome.bookmarks.remove(this.value);
+						});
+						location.reload();
+					});
+				}
+				break;
+
+			case 'merge_similar':
+				break;
+
+		}
+		if(action){
+			Util.removeHash();
+		}
+	};
+
+	window.onhashchange = do_action;
+	do_action();
+
 });

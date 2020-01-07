@@ -30,7 +30,7 @@ dialog {display:block;border:none;box-sizing:border-box;width: 98%;padding:20px;
 dialog::backdrop {position:fixed;top:0;left:0;right:0;bottom:0;background: #333b;}
 dialog .dialog-ti {font-size:20px; font-weight:normal; margin-bottom:1em; padding-bottom:0.5em}
 dialog .dialog-ctn {;}
-dialog .dialog-op {padding-top:0.5em;}
+dialog .dialog-op {padding-top: 1em;}
 dialog .dialog-ti,
 dialog .dialog-ctn,
 dialog .dialog-op {max-width: 600px;margin:0 auto;}
