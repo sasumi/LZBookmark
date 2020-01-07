@@ -26,6 +26,15 @@
 .drop-list:not(.muloperate-disabled):hover dt.btn:after {border-bottom-color:black;}
 .drop-list:not(.muloperate-disabled):hover dt.btn-weak:after {border-bottom-color:gray;}
 
+.context-menu {position:absolute; padding:10px; border:1px solid #ccc; box-shadow:var(--light-shadow)}
+.context-menu>a,
+.context-menu>span {display:block; padding:3px 10px; border-bottom:1px dotted #eeeeee; text-align:left;}
+.context-menu>a:last-child,
+.context-menu>span:last-child {display:block; padding:3px 10px; border-bottom:none}
+.context-menu>a:hover,
+.context-menu>span:hover {background-color:rgba(226, 237, 255, 0.58); text-shadow:1px 1px 1px white}
+.context-menu .sep {display:block; padding:0; height:0; margin:3px 5px; border-top:1px solid #dddddd;}
+
 .simple-list {max-height:200px; overflow-y:auto;}
 .simple-list li {padding:3px;}
 .simple-list li:nth-child(even) {background-color:#eee;}

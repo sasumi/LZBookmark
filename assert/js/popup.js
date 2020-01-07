@@ -4,6 +4,7 @@ import {Util} from "./Util.js";
 chrome.bookmarks.getSubTree("1", function(tree_nodes){
 	const COLLAPSED_LEVEL = 1;
 	const EMPTY_FN = ()=>{};
+	const $body = $('body');
 	let h = Util.escape;
 	let $tree = $('#bookmark-tree');
 
@@ -83,6 +84,26 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 		})
 	};
 
+	let $context;
+	const show_menu = ($li, [x, y])=>{
+		if(!$context){
+			$context = $(`<div class="context-menu"></div>`).appendTo('body');
+		}
+		$context.html($li.find('.drop-list dd').html());
+		$context.css({left: x, top:y}).show();
+	};
+
+	$body.click(function(e){
+		if(!$context){
+			return;
+		}
+		if($.contains($context[0], e.target) || $context[0] === e.target){
+			//click on context menu
+		} else {
+			$context.hide();
+		}
+	});
+
 	$tree.html(get_tree_html(tree_nodes, 0));
 	let plain_tree_nodes = Bookmark.getPlainTreeNodes(tree_nodes);
 
@@ -90,6 +111,10 @@ chrome.bookmarks.getSubTree("1", function(tree_nodes){
 		let $item = $(this).closest('li');
 		$item.toggleClass('collapsed');
 		$item.find('li').addClass('collapsed');
+	});
+
+	$tree.delegate('li', 'context', function(e){
+		show_menu($(this), [e.clientX, e.clientY]);
 	});
 
 	$tree.delegate('.edit-btn', 'click', function(){
