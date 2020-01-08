@@ -65,6 +65,55 @@ class Util {
 		history.pushState("", document.title, window.location.pathname
 			+ window.location.search);
 	}
+
+	static openLink(url, type = 'current', stay_open_flag = false){
+		if(url === "current"){
+			chrome.tabs.update(null, {url: url}, function(){
+				if(!stay_open_flag){
+					window.close();
+				}
+			});
+		}else if(url === "new"){
+			chrome.tabs.create({url: url, active: true}, function(){
+				if(!stay_open_flag){
+					window.close();
+				}
+			});
+		}else if(url === "newback"){
+			chrome.tabs.create({url: url, active: false}, function(){});
+		}else if(url === "newwind"){
+			chrome.windows.getCurrent(null, function(wd){
+				chrome.windows.create({
+					url: url,
+					height: wd.height,
+					left: wd.left,
+					top: wd.top,
+					width: wd.width
+				}, function(){
+					window.close();
+				});
+			});
+		}else if(url === "incgwnd"){
+			chrome.windows.getCurrent(null, function(wd){
+				chrome.windows.create({
+					url: url,
+					height: wd.height,
+					left: wd.left,
+					top: wd.top,
+					width: wd.width,
+					incognito: true
+				}, function(){
+					window.close();
+				});
+			});
+		}else{
+			chrome.tabs.update(null, {url: url}, function(){
+				if(!stay_open_flag){
+					window.close();
+				}
+			});
+		}
+	}
 }
 
 export {Util};

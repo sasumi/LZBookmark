@@ -4,10 +4,10 @@
     <list default="true" id="b28256c7-71f4-4339-831e-c724fc92808c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/css/com.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/com.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/css/global.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/global.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/js/Bookmark.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Bookmark.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/js/UI.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/UI.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/tree.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/tree.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/Util.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Util.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/popup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/popup.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -84,6 +84,8 @@
       <workItem from="1578357055662" duration="15947000" />
       <workItem from="1578390178192" duration="1494000" />
       <workItem from="1578404587462" duration="692000" />
+      <workItem from="1578476613943" duration="359000" />
+      <workItem from="1578477210894" duration="2580000" />
     </task>
     <servers />
   </component>

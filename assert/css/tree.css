@@ -23,7 +23,7 @@
 .bookmark-tree .item-wrap {padding:3px 5px;}
 
 .bookmark-tree .remark,
-.bookmark-tree .fold {vertical-align:middle;cursor:pointer;height: 1.5em;overflow: hidden;display: block;margin-right: 50px;color: #d68a00;}
+.bookmark-tree .fold {vertical-align:middle;cursor:pointer;height: 1.5em;overflow: hidden;/* display: block; */margin-right: 50px;color: #d68a00;}
 .bookmark-tree .remark {color: #6d6dab;}
 .bookmark-tree .fold:before {content:"\e696";font-family:var(--iconfont);margin-right:0.5em;}
 .bookmark-tree .collapsed>.item-wrap>.fold:before {content:"\e600"}
