@@ -3,11 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="b28256c7-71f4-4339-831e-c724fc92808c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/css/com.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/com.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/css/tree.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/tree.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/Bookmark.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Bookmark.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/Util.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Util.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/popup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/popup.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

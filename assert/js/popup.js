@@ -75,19 +75,20 @@ const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
 		let menu_html;
 		if(isFolder){
 			menu_html =
-				`<span class="iconfont icon-add-folder add-folder-btn" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks</span>
-				<span class="iconfont icon-add-folder add-folder-btn" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In New Window</span>
-				<span class="iconfont icon-add-folder add-folder-btn" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In Incognito Window</span>
+				`<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In New Window</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In Incognito Window</span>
 				<span class="sep"></span>
-				<span class="iconfont icon-add-folder add-folder-btn" data-cmd="addFolder" data-id="${item.id}">Add Folder</span> 
+				<span class="iconfont icon-add-folder" data-cmd="addFolder" data-id="${item.id}">Add Folder</span> 
 				<span class="iconfont icon-edit edit-btn" data-cmd="editFolder" data-id="${item.id}">Edit</span>
 				<span class="iconfont icon-trash" data-cmd="removeFolder" data-id="${item.id}">Remove</span>`;
 		}else{
 			menu_html =
-				`<span class="iconfont icon-add-folder open-link-btn" data-cmd="openLink" data-value="NewTab" data-id="${item.id}">Open in New Tab</span>
-				<span class="iconfont icon-add-folder open-link-btn" data-cmd="openLink" data-value="Background" data-id="${item.id}">Open in Background</span>
-				<span class="iconfont icon-add-folder open-link-btn" data-cmd="openLink" data-value="NewWindow" data-id="${item.id}">Open in New Window</span>
-				<span class="iconfont icon-add-folder open-link-btn" data-cmd="openLink" data-value="Incognito" data-id="${item.id}">Open in New Incognito Window</span>
+				`<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_CURRENT_TAB}"}'>Open</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB}"}'>Open in New Tab</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="Background" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open in Background</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewWindow" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open in New Window</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="Incognito" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open in New Incognito Window</span>
 				<span class="sep"></span>
 				<span class="iconfont icon-edit edit-btn" data-cmd="editLink" data-id="${item.id}">Edit</span>
 				<span class="iconfont icon-trash" data-cmd="removeLink" data-id="${item.id}">Remove</span>`;
@@ -177,11 +178,18 @@ const updateFolder = (bookmark, on_success) => {
 };
 
 const openFolder = (bookmark, param)=>{
-
+	let links = [];
+	Bookmark.getSubTree(bookmark.id, function(items){
+		items.forEach(function(item){
+			if(!Bookmark.isFolder(item)){
+				links.push(item.url);
+			}
+		})
+	});
 };
 
 const openLink = (bookmark, param) => {
-	Util.openLink(bookmark.url, param.type);
+	Bookmark.openLink(bookmark.url, param.type);
 };
 
 const editLink = (bookmark) => {
@@ -446,10 +454,6 @@ $tree.contextmenu(function(e){
 		show_menu($li, [e.clientX, e.clientY]);
 		return false;
 	}
-});
-
-$tree.delegate('.add-folder-btn', 'click', function(){
-	addFolder($(this).closest('li').data('id'))
 });
 
 $tree.delegate('.fold', 'click', function(){

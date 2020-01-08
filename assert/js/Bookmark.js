@@ -2,6 +2,11 @@ import {Util} from "./Util.js";
 class Bookmark {
 	static TYPE_FOLDER = 'folder';
 	static TYPE_LINK = 'link';
+	static OPEN_CURRENT_TAB = 'CurrentTab';
+	static OPEN_NEW_TAB = 'NewTab';
+	static OPEN_NEW_TAB_BACK = 'NewTabBack';
+	static OPEN_NEW_WIN = 'NewWin';
+	static OPEN_INC_WIN = 'IncWin';
 
 	static getParentTitlePath = (item ,all_map)=>{
 		let parent_title = [];
@@ -174,6 +179,54 @@ class Bookmark {
 
 	static removeTree(id, callback){
 		return chrome.bookmarks.removeTree(id + '', callback);
+	}
+
+	/**
+	 * open link
+	 * @param url
+	 * @param type
+	 * @param callback
+	 */
+	static openLink(url, type = Bookmark.OPEN_CURRENT_TAB, callback = Util.EMPTY_FN){
+		switch(type){
+			case Bookmark.OPEN_NEW_TAB_BACK:
+				chrome.tabs.create({url: url, active:false}, callback);
+				break;
+
+			case Bookmark.OPEN_NEW_TAB:
+				chrome.tabs.create({url: url, active:true}, callback);
+				break;
+
+			case Bookmark.OPEN_NEW_WIN:
+				chrome.windows.getCurrent(null, function(wd){
+					chrome.windows.create({
+						url: url,
+						height: wd.height,
+						left: wd.left,
+						top: wd.top,
+						width: wd.width
+					}, callback);
+				});
+				break;
+
+			case Bookmark.OPEN_INC_WIN:
+				chrome.windows.getCurrent(null, function(wd){
+					chrome.windows.create({
+						url: url,
+						height: wd.height,
+						left: wd.left,
+						top: wd.top,
+						width: wd.width,
+						incognito: true
+					}, callback);
+				});
+				break;
+
+			case Bookmark.OPEN_CURRENT_TAB:
+			default:
+				chrome.tabs.update(null, {url: url}, callback);
+				break;
+		}
 	}
 }
 
