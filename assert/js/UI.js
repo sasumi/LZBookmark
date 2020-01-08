@@ -21,10 +21,12 @@ class UI {
 	static showAlert(title, content, on_ok){
 		let op_html = `<span class="btn btn-outline btn-ok">Close</span>`;
 		UI.showDialog(title, content, op_html, function($dlg){
-			on_ok = on_ok || Util.EMPTY_FN;
-			if(on_ok($dlg) !== false){
-				$dlg.remove();
-			}
+			$dlg.find('.btn-ok').click(function(){
+				on_ok = on_ok || Util.EMPTY_FN;
+				if(on_ok($dlg) !== false){
+					$dlg.remove();
+				}
+			});
 		});
 	};
 

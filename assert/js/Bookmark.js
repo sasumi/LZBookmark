@@ -112,7 +112,9 @@ class Bookmark {
 	}
 
 	static getOne(id, callback){
-		return chrome.bookmarks.get(id + '', callback);
+		return chrome.bookmarks.get(id + '', function(items){
+			callback(items[0]);
+		});
 	}
 
 	static getList(idList, callback){
@@ -144,8 +146,10 @@ class Bookmark {
 		return chrome.bookmarks.getTree(callback);
 	}
 
-	static getSubTree(id, callback){
-		return chrome.bookmarks.getSubTree(id + '', callback);
+	static getSubTree(id, callback, asPlain = false){
+		return chrome.bookmarks.getSubTree(id + '', function(items){
+			callback(asPlain ? Bookmark.convertPlain(items) : items);
+		});
 	}
 
 	static searchByKey(keyword, callback){

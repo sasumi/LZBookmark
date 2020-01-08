@@ -12,7 +12,7 @@
 .drop-list.muloperate-disabled dt.btn {color:#cccccc; border-color:#cccccc; cursor:default}
 .drop-list dd {display:none;position:absolute;box-shadow:1px 1px 5px #aaaaaa;padding: 5px;margin-right:10px;z-index:1;left:0;background-color:rgba(255, 255, 255, 0.95);border-radius:3px;min-width:80px;}
 .drop-list dd>a,
-.drop-list dd>span {display:block;padding:3px 10px;border-bottom: 1px solid #ddd;text-align:left;}
+.drop-list dd>span {display:block;padding:3px 10px;text-align:left;}
 .drop-list dd>a:last-child,
 .drop-list dd>span:last-child {display:block; padding:3px 10px; border-bottom:none}
 .drop-list dd>a:hover,
@@ -26,13 +26,13 @@
 .drop-list:not(.muloperate-disabled):hover dt.btn:after {border-bottom-color:black;}
 .drop-list:not(.muloperate-disabled):hover dt.btn-weak:after {border-bottom-color:gray;}
 
-.context-menu {position:absolute;padding: 5px;border:1px solid #ccc;box-shadow:var(--light-shadow);background-color:#fff;border-radius: 3px;}
+.context-menu {position:absolute;padding: 5px;border:1px solid #ccc;box-shadow:var(--light-shadow);background-color:#fff;border-radius: 3px;font-size: 12px;}
 .context-menu-with-point {margin-top:5px;margin-left: -10px;}
 .context-menu-with-point:before,
 .context-menu-with-point:after {content:"";width:0;height:0;border:5px solid transparent;border-bottom-color:white;/* box-shadow:1px 0 1px #ccc; */position:absolute;top: 0;left: 10px;margin-top: -10px;z-index: 2;}
 .context-menu-with-point:after {z-index:1;border-bottom-color: #a5a5a5;margin-top: -11px;}
 .context-menu>a,
-.context-menu>span {display:block;padding:3px 10px;border-bottom: 1px solid #ddd;text-align:left;}
+.context-menu>span {display:block;padding:3px 10px;text-align:left;}
 .context-menu>a:last-child,
 .context-menu>span:last-child {display:block; padding:3px 10px; border-bottom:none}
 .context-menu>a:hover,
