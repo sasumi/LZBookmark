@@ -1,4 +1,15 @@
 class Util {
+	static EMPTY_FN = ()=>{};
+
+	static arrayWalkRecursive = (arr, callback, childrenKey = 'children')=>{
+		arr.forEach((item)=>{
+			callback(item);
+			if(item[childrenKey]){
+				Util.arrayWalkRecursive(item[childrenKey], callback);
+			}
+		});
+	};
+
 	static escape(str){
 		return String(str)
 			.replace(/&/g, '&amp;')

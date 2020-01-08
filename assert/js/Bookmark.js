@@ -1,5 +1,4 @@
 import {Util} from "./Util.js";
-
 class Bookmark {
 	static TYPE_FOLDER = 'folder';
 	static TYPE_LINK = 'link';
@@ -13,18 +12,9 @@ class Bookmark {
 		return parent_title.reverse();
 	};
 
-	static arrayWalkRecursive = (nodes, callback)=>{
-		nodes.forEach((item)=>{
-			callback(item);
-			if(item.children){
-				Bookmark.arrayWalkRecursive(item.children, callback);
-			}
-		});
-	};
-
-	static getPlainTreeNodes = (nodes) => {
+	static convertPlain = (nodes) => {
 		let ret = [];
-		Bookmark.arrayWalkRecursive(nodes, function(item){
+		Util.arrayWalkRecursive(nodes, function(item){
 			let data = {
 				id: item.id,
 				index: item.index,
@@ -47,9 +37,9 @@ class Bookmark {
 		return ret;
 	};
 
-	static foundEmptyFolders = (plain_tree_nodes) => {
+	static foundEmptyFolders = (plain_items) => {
 		let ret = [];
-		plain_tree_nodes.forEach((item)=>{
+		plain_items.forEach((item)=>{
 			if(item.children_count === 0 && !item.url){
 				ret.push(item);
 			}
@@ -57,10 +47,10 @@ class Bookmark {
 		return ret;
 	};
 
-	static foundSameUrlNodes = (plain_tree_nodes)=>{
+	static foundSameUrlNodes = (plain_items)=>{
 		let ret = [];
 		let map = {};
-		plain_tree_nodes.forEach((item)=>{
+		plain_items.forEach((item)=>{
 			if(!item.url){
 				return;
 			}
@@ -75,15 +65,15 @@ class Bookmark {
 
 	/**
 	 * merge same level + same name folders
-	 * @param plain_tree_nodes
+	 * @param plain_items
 	 * @returns {[]}
 	 */
-	static foundMergeFolders = (plain_tree_nodes)=>{
+	static foundMergeFolders = (plain_items)=>{
 		let ret = [];
 		let last_level = 0;
 		let tmp_titles = {};
-		plain_tree_nodes.forEach((item)=>{
-			if(!Bookmark.isFolder(item)){
+		plain_items.forEach((item)=>{
+			if(!this.isFolder(item)){
 				return;
 			}
 			if(item.level !== last_level){
@@ -102,40 +92,84 @@ class Bookmark {
 		return ret;
 	};
 
-	static getFaviconHtml(item){
-		return '<span class="favicon" style=\'background-image:url("chrome://favicon/size/16@1x/'+item.url+'\');"></span>';
-	}
-
-	static getChildren = (plain_tree_nodes, parentId, recursive = false, filter = ()=>{})=>{
-		let ret = [];
-		plain_tree_nodes.forEach((item)=>{
-			if(item.parentId === parentId && filter(item) !== false){
-				ret.push(item);
-			}
-		});
-		if(recursive){
-			//todo
-		}
-		return ret;
-	};
-
-	static getFolderSelection = (plain_nodes)=>{
+	static getFolderSelection = (id)=>{
 		let html = '<select>';
-		plain_nodes.forEach((item)=>{
+		Bookmark.walkChildren(id, function(item, level){
 			if(Bookmark.isFolder(item)){
-				let tab = Util.strRepeat('&nbsp;',item.level*4);
+				let tab = Util.strRepeat('&nbsp;',level*4);
 				html += `<option value="${item.id}">${tab} ${Util.escape(item.title)}</option>`;
 			}
 		});
 		return html + `<select>`;
 	};
 
-	static resolveType = (item)=>{
-		return item.url ? Bookmark.TYPE_LINK : Bookmark.TYPE_FOLDER;
+	static getType = (item)=>{
+		return item.url ? this.TYPE_LINK : this.TYPE_FOLDER;
 	};
 
 	static isFolder(item){
-		return Bookmark.resolveType(item) === Bookmark.TYPE_FOLDER;
+		return this.getType(item) === this.TYPE_FOLDER;
+	}
+
+	static getOne(id, callback){
+		return chrome.bookmarks.get(id + '', callback);
+	}
+
+	static getList(idList, callback){
+		return chrome.bookmarks.get(idList, callback);
+	}
+
+	static walkChildren(id, callback, _level = 0){
+		Bookmark.getChildren(id, function(items){
+			items.forEach((item)=>{
+				callback(item, _level);
+				if(item.children){
+					Bookmark.walkChildren(item.id, callback, _level+1);
+				}
+			});
+		})
+	}
+
+	static getChildren(id, callback, asPlain = false){
+		return chrome.bookmarks.getChildren(id + '', function(items){
+			callback(asPlain ? Bookmark.convertPlain(items) : items);
+		});
+	}
+
+	static getRecent(num, callback){
+		return chrome.bookmarks.getRecent(num, callback);
+	}
+
+	static getTree(callback){
+		return chrome.bookmarks.getTree(callback);
+	}
+
+	static getSubTree(id, callback){
+		return chrome.bookmarks.getSubTree(id + '', callback);
+	}
+
+	static searchByKey(keyword, callback){
+		return chrome.bookmarks.search(keyword, callback);
+	}
+
+	static create(bookmark, callback){
+		return chrome.bookmarks.create(bookmark, callback);
+	}
+
+	static move(id, destination, callback){
+		return chrome.bookmarks.move(id + '', destination, callback);
+	}
+
+	static update(id, changes, callback){
+		return chrome.bookmarks.update(id + '', changes, callback);
+	}
+
+	static remove(id, callback){
+		return chrome.bookmarks.remove(id + '', callback);
+	}
+
+	static removeTree(id, callback){
+		return chrome.bookmarks.removeTree(id + '', callback);
 	}
 }
 

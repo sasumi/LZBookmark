@@ -4,6 +4,9 @@
     <list default="true" id="b28256c7-71f4-4339-831e-c724fc92808c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/css/com.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/com.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/tree.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/tree.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/Bookmark.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Bookmark.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/Util.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Util.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/popup.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -36,22 +39,22 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/assert/img" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assert/js" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JSON" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\htdocs\bookmark\assert\img" />
-      <recent name="D:\htdocs\bookmark" />
-      <recent name="D:\htdocs\bookmark\assert\js" />
-      <recent name="D:\htdocs\bookmark\assert\css" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\htdocs\bookmark" />
       <recent name="D:\htdocs\bookmark\assert\css" />
       <recent name="D:\htdocs\bookmark\assert\img" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\htdocs\bookmark\assert\js" />
+      <recent name="D:\htdocs\bookmark\assert\img" />
+      <recent name="D:\htdocs\bookmark" />
+      <recent name="D:\htdocs\bookmark\assert\css" />
     </key>
   </component>
   <component name="RunDashboard">

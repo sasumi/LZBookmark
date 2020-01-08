@@ -18,7 +18,8 @@
 
 .bookmark-tree li:after {border-left:1px solid #aaaaaa;height:100%;width:0px;top:2px;}
 .bookmark-tree ul > li:last-child:after {height:14px;}
-.bookmark-tree .item-wrap:hover {background-color:#eee;}
+.bookmark-tree .item-wrap:hover {background-color:#eee}
+.bookmark-tree .item-focus {background-color:#eee;box-shadow: inset 1px 1px 5px 0px #d8d8d8;}
 .bookmark-tree .item-wrap {padding:3px 5px;}
 
 .bookmark-tree .remark,
@@ -30,10 +31,6 @@
 .bookmark-tree .cnt:before {content:"("}
 .bookmark-tree .cnt:after {content:")"}
 
-.bookmark-tree .drop-list {position: absolute;right:3px;top:3px;opacity:0.2;transition:all 0.2s linear;}
+.bookmark-tree .drop-list {position: absolute;right:3px;top:3px;/* opacity:0.2; */transition:all 0.2s linear;}
+.bookmark-tree .drop-list dt {color:gray;}
 .bookmark-tree .item-wrap:hover>.drop-list {opacity:1}
-.bookmark-tree .edit-btn,
-.bookmark-tree .remove-btn{}
-.bookmark-tree .edit-btn:before,
-.bookmark-tree .remove-btn:before {content:"\e60f"; font-family:var(--iconfont); margin-right:0.2em;}
-.bookmark-tree .remove-btn:before {content:"\e61a"}

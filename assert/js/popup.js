@@ -1,398 +1,395 @@
 import {Bookmark} from "./Bookmark.js";
 import {Util} from "./Util.js";
+import {UI} from "./UI.js";
 
-chrome.bookmarks.getSubTree("1", function(tree_nodes){
-	const COLLAPSED_LEVEL = 1;
-	const EMPTY_FN = ()=>{};
-	const $body = $('body');
-	let h = Util.escape;
-	let $tree = $('#bookmark-tree');
+const $body = $('body');
+const h = Util.escape;
+const $tree = $('#bookmark-tree');
+const CLASS_FOCUS = 'item-focus';
+const CLASS_ITEM = 'item-wrap';
+const INIT_COLLAPSED_LEVEL = 0;
+const ROOT_ID = '1';
 
-	const get_tree_html = (children, level)=>{
-		let html = '';
-		children.forEach((item)=>{
-			let title = item.title || "Root";
-			let type = Bookmark.resolveType(item);
-			let children_count = item.children ? item.children.length : 0;
-			let sub_html = `<li data-id="${item.id}" data-type="${type}" data-children-count="${children_count}" class="${level === COLLAPSED_LEVEL ? 'collapsed':''}">`;
-			sub_html += '<div class="item-wrap">';
-			if(type === Bookmark.TYPE_FOLDER){
-				sub_html += `<span class="fold">${h(title)} <span class="cnt">`+item.children.length+`</span></span>`;
-			} else {
-				sub_html += `<a href="${h(item.url)}" target="_blank" title="${h(item.title+"\n"+item.url)}" class="remark">${Bookmark.getFaviconHtml(item)} ${h(item.title)}</a>`;
+const removeItem = ($li)=>{
+	let type = $li.data('type');
+	let id = $li.data('id');
+	let children_count = $li.data('children-count');
+	if(type === Bookmark.TYPE_LINK || !children_count){
+		Bookmark.remove(id, function(){
+			$li.remove();
+		});
+		return;
+	}
+	Bookmark.getChildren(id, function(items){
+		items.filter((item)=>{return !Bookmark.isFolder(item);});
+		let sub_links_html = 'Children links found:<ul class="simple-list">';
+		items.forEach((item)=>{
+			sub_links_html += `<li>${UI.getFaviconHtml(item.url)} <a href="${h(item.url)}" target="_blank">${h(item.title)}</a></li>`;
+		});
+		sub_links_html += `</ul>`;
+		UI.showConfirm('Confirm to remove folder?',sub_links_html, function(){
+			Bookmark.removeTree(id, function(){
+				$li.remove();
+			});
+		})
+	});
+};
+const updateItem = ($li)=>{
+	let id = $li.data('id');
+	Bookmark.getOne(id, function(items){
+		update_bookmark_ui(items[0]);
+	});
+};
+
+const update_bookmark_ui = (bookmark = {title:"", url:"", id:null}, on_success)=>{
+	on_success = on_success || Util.EMPTY_FN;
+	let pre_text = bookmark.id ? 'Update' : 'Add';
+	let folder_selection_html = bookmark.id ? '' : '<li>'+Bookmark.getFolderSelection(bookmark.id, ROOT_ID)+'</li>';
+	let html = `<ul class="form-item full-item">
+						${folder_selection_html}
+						<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
+						<li><input type="url" required name="url" placeholder="Url" value="${h(bookmark.url)}"></li>
+					</ul>`;
+	UI.showConfirm(`${pre_text} Bookmark`, html, function($dlg){
+		let title = $.trim($dlg.find('[name=title]').val());
+		let url = $.trim($dlg.find('[name=url]').val());
+		if(bookmark.id){
+			Bookmark.update(bookmark.id, {title:title, url:url}, function(){
+				let $node = $tree.find('li[data-id='+bookmark.id+']');
+				if(Bookmark.isFolder(bookmark)){
+					let org_cnt = $node.find('.cnt').text();
+					$node.find('.fold').html(h(title) + (org_cnt ? `<span class="cnt">${org_cnt}</span>` : ''));
+				} else {
+					$node.find('.remark')
+						.attr('title', title+"\n"+url)
+						.attr('href', url).text(title);
+				}
+				on_success();
+			});
+		} else {
+			location.reload();
+		}
+	});
+};
+
+const sorting = ()=>{
+	let html = '<div>Sorting By:</div><ul class="sorting-conditions">';
+	html += '<li>Type: <select><option>Folder First</option><option>Link First</option><option>As Default</option></select>';
+	html += '<li>Spell: <select><option>A-Z</option><option>Z-A</option><option>As Default</option></select>';
+	html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
+	html += '</ul>';
+	UI.showConfirm('Sorting bookmarks', html, function($dlg){
+
+	});
+};
+
+const remove404 = (id = ROOT_ID)=>{
+	Bookmark.getChildren(id, function(plain_items){
+		let links = [];
+		plain_items.forEach(function(item){
+			if(item.url){
+				links.push(item);
 			}
-			sub_html += `
+		});
+		let total = links.length;
+		let html =
+			`<div class="bookmark-checking-timeout">Timeout: <input type="number" name="timeout" value="8" min="1" step="1"> Sec</div>
+				<div class="bookmark-checking run-info">
+					Progress: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
+					<progress max="${total}" value="0"></progress>
+					<span class="current-site" style="display:none;">Checking: <a href="" target="_blank"></a></span>
+				</div>`;
+
+		html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
+		html += '</ul>';
+		let op_html = `<span class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
+		op_html += `<span class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
+		op_html += `<span class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
+		op_html += '<span class="btn btn-outline btn-close">Close</span>';
+
+		UI.showDialog('Remove 404 bookmarks', html, op_html, function($dlg){
+			let $progress = $dlg.find('progress');
+			let $cnt = $dlg.find('.cnt');
+			let $percent = $dlg.find('.percent');
+			let $current = $dlg.find('.current-site');
+			let $error_list = $dlg.find('ul');
+			let $timeout_input = $dlg.find('input[name=timeout]');
+
+			let stop_sign = false;
+
+			let $start_btn = $dlg.find('.btn-start');
+			let $stop_btn = $dlg.find('.btn-stop');
+			let $delete_btn = $dlg.find('.btn-deletes');
+			let $close_btn = $dlg.find('.btn-close');
+
+			$close_btn.click(function(){
+				stop_sign = true;
+				$dlg.remove();
+			});
+
+			$dlg.delegate('.btn-remove', 'click', function(){
+				let id = $(this).closest('li').find('input[name=fails]').val();
+				Bookmark.remove(id);
+				$(this).closest('li').remove();
+			});
+
+			$delete_btn.click(function(){
+				let $inputs = $error_list.find('input[name=fails]');
+				let count = $inputs.size();
+				if(!count){
+					alert('No item selected');
+					return;
+				}
+				if(confirm('Confirm to remove ' + count + ' bookmarks?')){
+					$inputs.each(function(){
+						Bookmark.remove(this.value);
+					});
+					location.reload();
+				}
+			});
+
+			$stop_btn.click(function(){
+				stop_sign = true;
+				$start_btn.show();
+				$stop_btn.hide();
+				$delete_btn.show();
+				$current.hide();
+				$timeout_input.removeAttr('disabled');
+			});
+
+			$start_btn.click(function(){
+				$start_btn.hide();
+				$stop_btn.show();
+				$delete_btn.hide();
+				$current.show();
+				$timeout_input.attr('disabled', 'disabled');
+				let timeout = parseInt($timeout_input.val(), 10) * 1000;
+				let tmp = links;
+				let current_cnt = 0;
+				let do_check = function(item, on_item_finish){
+					if(!item || stop_sign){
+						return;
+					}
+					$current.find('a').attr('href', item.url).text(item.title);
+					Util.check404(item.url, function(is_success, message){
+						on_item_finish(item, is_success, message);
+						do_check(tmp.shift(), on_item_finish);
+					}, timeout)
+				};
+				do_check(tmp.shift(), function(item, is_success, message){
+					current_cnt++;
+					$cnt.html(current_cnt);
+					$percent.html((Math.round(100 * current_cnt / total)) + '%');
+					$progress.val(current_cnt);
+					if(!is_success){
+						$error_list.show();
+						let html = `<li> 
+											<input type="checkbox" name="fails" value="${item.id}" checked> 
+											<a href="${h(item.url)}" target="_blank">${h(item.title)}</a> 
+											<span class="err">${h(message)}</span>
+											<span class="btn-remove link iconfont icon-trash"></span>
+										</li>`;
+						$(html).prependTo($error_list);
+					}
+				});
+			});
+		});
+	}, true);
+
+};
+
+const cleanupFolder = (id = ROOT_ID)=>{
+	Bookmark.getChildren(id, function(plain_items){
+		let empty_nodes = Bookmark.foundEmptyFolders(plain_items);
+		let folders_to_merge = Bookmark.foundMergeFolders(plain_items);
+		let html = '';
+		if(empty_nodes.length){
+			html += '<div>Empty folders found:</div>';
+			html += `<ul style="max-height:100px; overflow-y:scroll;">`;
+			empty_nodes.forEach((item) => {
+				html += `<li><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.parentTitle)} / <span class="iconfont icon-fold">${h(item.title)}</span> </li>`;
+			});
+			html += `</ul>`;
+		}
+		if(folders_to_merge.length){
+			html += '<div>Same name folders to merge:</div>';
+			html += '<ul style="max-height:200px; overflow-y:auto;">';
+			folders_to_merge.forEach((tmp) => {
+				let [item, to_id] = tmp;
+				html += `<li><input type="checkbox" name="moves" value="${item.id}" data-to-id="${to_id}" checked> <span class="iconfont icon-fold">${h(item.title)}</span></li>`
+			});
+			html += '</ul>';
+		}
+
+		if(!html){
+			UI.showAlert('Clean up folders', 'No empty bookmark folders found.');
+			return;
+		}
+		UI.showConfirm('Clean up folders', html, function($dlg){
+			$dlg.find('input[name=deletes]:checked').each(function(){
+				Bookmark.remove(this.value);
+			});
+			$dlg.find('input[name=moves]:checked').each(function(){
+				Bookmark.getChildren(this.value, (children) => {
+					children.forEach((item) => {
+						Bookmark.move(item.id, {
+							parentId: $(this).data('to-id') + ""
+						});
+					});
+					Bookmark.remove(this.value);
+				}, true);
+			});
+			location.reload();
+		});
+	}, true);
+};
+
+const cleanupItem = (id = ROOT_ID)=>{
+	Bookmark.getChildren(id, function(plain_items){
+		let same_url_nodes = Bookmark.foundSameUrlNodes(plain_items);
+		if(!same_url_nodes.length){
+			UI.showAlert('Clean up item', 'No duplicate bookmark items found.');
+			return;
+		}
+
+		let html = '';
+		html += '<div>Duplicate bookmark found:</div>';
+		html += `<ul style="max-height:200px; overflow-y:auto;">`;
+		same_url_nodes.forEach((item) => {
+			html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
+		});
+		html += '</ul>';
+		UI.showConfirm('Clean up item', html, function($dlg){
+			$dlg.find('input[name=deletes]:checked').each(function(){
+				Bookmark.remove(this.value);
+			});
+			location.reload();
+		});
+	}, true);
+};
+
+const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
+	let html = '';
+	children.forEach((item)=>{
+		let title = item.title || "Root";
+		let type = Bookmark.getType(item);
+		let children_count = item.children ? item.children.length : 0;
+		let sub_html = `<li data-id="${item.id}" data-type="${type}" data-children-count="${children_count}" class="${initLevel > collapseLevel ? 'collapsed':''}">`;
+		sub_html += `<div class="${CLASS_ITEM}">`;
+		if(type === Bookmark.TYPE_FOLDER){
+			sub_html += `<span class="fold">${h(title)} <span class="cnt">`+children_count+`</span></span>`;
+		} else {
+			sub_html += `<a href="${h(item.url)}" target="_blank" title="${h(item.title+"\n"+item.url)}" class="remark">${UI.getFaviconHtml(item.url)} ${h(item.title)}</a>`;
+		}
+		sub_html += `
 					<dl class="drop-list drop-list-left">
 						<dt><span class="iconfont icon-option-vertical"></span></dt>
 						<dd>
-							<span class="link edit-btn">Edit</span>
-							<span class="link remove-btn">Remove</span>
+							<span class="link iconfont icon-edit edit-btn">Edit</span>
+							<span class="link iconfont icon-trash remove-btn">Remove</span>
 						</dd>
 					</dl></div>`;
 
-			if(type === Bookmark.TYPE_FOLDER && children_count){
-				sub_html += `<ul>`+get_tree_html(item.children, level+1)+`</ul>`;
-			}
-			sub_html += `</li>`;
-			html += sub_html;
-		});
-		return html;
-	};
+		if(type === Bookmark.TYPE_FOLDER && children_count){
+			sub_html += `<ul>`+getTreeHtml(item.children, initLevel+1, collapseLevel)+`</ul>`;
+		}
+		sub_html += `</li>`;
+		html += sub_html;
+	});
+	return html;
+};
 
-	const show_dialog = (title, content, op_html, on_show) =>{
-		let html = `<dialog><div class="dialog-ti">${title}</div>`;
-		html += `<div class="dialog-ctn">${content}</div>`;
-		html += `<div class="dialog-op">${op_html}</div>`;
-		html += '</dialog>';
-		let $dlg = $(html).appendTo('body');
-		$dlg[0].showModal();
-		on_show($dlg);
-	};
+const renderTree = (id, callback, initLevel = 0) => {
+	Bookmark.getSubTree(id, function(items){
+		let html = getTreeHtml(items, initLevel, INIT_COLLAPSED_LEVEL);
+		let $exist = $tree.find('li[data-id=' + id + ']');
+		if($exist.size()){
+			$(html).insertBefore($exist);
+			$exist.remove();
+		}else{
+			$(html).appendTo($tree);
+		}
+		callback();
+	});
+};
 
-	const show_confirm = (title, content, on_confirm, on_cancel)=>{
-		on_cancel = on_cancel || EMPTY_FN;
-		let html = `<dialog><div class="dialog-ti">${title}</div>`;
-		html += `<div class="dialog-ctn">${content}</div>`;
-		html += `<div class="dialog-op"><span class="btn btn-primary btn-confirm">Confirm</span> <span class="btn btn-outline btn-cancel">Cancel</span></div>`;
-		html += '</dialog>';
-		let $dlg = $(html).appendTo('body');
-		$dlg[0].showModal();
-		$dlg.find('.btn-cancel').click(function(){
-			if(on_cancel($dlg) !== false){
-				$dlg.remove();
-			}
-		});
-		$dlg.find('.btn-confirm').click(function(){
-			if(on_confirm($dlg) !== false){
-				$dlg.remove();
-			}
-		});
-	};
-
-	const show_alert = (title, content, on_ok)=>{
-		on_ok = on_ok || EMPTY_FN;
-		let html = `<dialog><div class="dialog-ti">${title}</div>`;
-		html += `<div class="dialog-ctn">${content}</div>`;
-		html += `<div class="dialog-op"><span class="btn btn-outline btn-ok">Close</span></div>`;
-		html += '</dialog>';
-		let $dlg = $(html).appendTo('body');
-		$dlg[0].showModal();
-		$dlg.find('.btn-ok').click(function(){
-			if(on_ok($dlg) !== false){
-				$dlg.remove();
-			}
-		})
-	};
-
+//context even binding
+{
 	let $context;
+	let $last_li;
 	const show_menu = ($li, [x, y])=>{
+		$last_li = $li;
 		if(!$context){
-			$context = $(`<div class="context-menu"></div>`).appendTo('body');
+			$context = $(`<div class="context-menu context-menu-with-point"></div>`).appendTo('body');
+			$context.delegate('.remove-btn', 'click', function(){removeItem($last_li);});
+			$context.delegate('.edit-btn', 'click', function(){updateItem($last_li);});
 		}
 		$context.html($li.find('.drop-list dd').html());
+		$tree.find('.'+CLASS_ITEM).removeClass(CLASS_FOCUS);
+		$li.find('.'+CLASS_ITEM).eq(0).addClass(CLASS_FOCUS);
 		$context.css({left: x, top:y}).show();
 	};
 
 	$body.click(function(e){
 		if(!$context){
+			$tree.find('li').removeClass(CLASS_FOCUS);
 			return;
 		}
 		if($.contains($context[0], e.target) || $context[0] === e.target){
 			//click on context menu
 		} else {
+			$tree.find('.'+CLASS_ITEM).removeClass(CLASS_FOCUS);
 			$context.hide();
 		}
 	});
 
-	$tree.html(get_tree_html(tree_nodes, 0));
-	let plain_tree_nodes = Bookmark.getPlainTreeNodes(tree_nodes);
-
-	$tree.delegate('.fold', 'click', function(){
-		let $item = $(this).closest('li');
-		$item.toggleClass('collapsed');
-		$item.find('li').addClass('collapsed');
-	});
-
-	$tree.delegate('li', 'context', function(e){
-		show_menu($(this), [e.clientX, e.clientY]);
-	});
-
-	$tree.delegate('.edit-btn', 'click', function(){
-		let id = $(this).closest('li').data('id');
-		let item = plain_tree_nodes[id];
-		update_bookmark_ui(item);
-	});
-
-	$tree.delegate('.remove-btn', 'click', function(){
-		let $li = $(this).closest('li');
-		let type = $li.data('type');
-		let id = $li.data('id')+"";
-		let children_count = $li.data('children-count');
-		if(type === Bookmark.TYPE_LINK || !children_count){
-			chrome.bookmarks.remove(id, function(){
-				$li.remove();
-			});
+	$tree.contextmenu(function(e){
+		let $tag = $(e.target);
+		let $li = null;
+		if($tag.hasClass(CLASS_ITEM) || $tag.closest('.'+CLASS_ITEM).size()){
+			$li = $tag.closest('li');
+			show_menu($li, [e.clientX, e.clientY]);
+			return false;
 		}
-
-		let sub_links = Bookmark.getChildren(plain_tree_nodes, id, true, (item)=>{return !Bookmark.isFolder(item);});
-		let sub_links_html = 'Children links found:<ul class="simple-list">';
-		sub_links.forEach((item)=>{
-			sub_links_html += `<li>${Bookmark.getFaviconHtml(item)} <a href="${h(item.url)}" target="_blank">${h(item.title)}</a></li>`;
-		});
-		sub_links_html += `</ul>`;
-
-		show_confirm('Confirm to remove folder?',sub_links_html, function(){
-			chrome.bookmark.removeTree(id, function(){
-				$li.remove();
-			});
-		})
 	});
+}
 
-	const update_bookmark_ui = (bookmark = {title:"", url:"", id:null}, on_success)=>{
-		on_success = on_success || EMPTY_FN;
-		let pre_text = bookmark.id ? 'Update' : 'Add';
-		let folder_selection_html = bookmark.id ? '' : '<li>'+Bookmark.getFolderSelection(plain_tree_nodes, bookmark.id)+'</li>';
-		let html = `<ul class="form-item full-item">
-						${folder_selection_html}
-						<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
-						<li><input type="url" required name="url" placeholder="Url" value="${h(bookmark.url)}"></li>
-					</ul>`;
-		show_confirm(`${pre_text} Bookmark`, html, function($dlg){
-			let title = $.trim($dlg.find('[name=title]').val());
-			let url = $.trim($dlg.find('[name=url]').val());
-			if(bookmark.id){
-				chrome.bookmarks.update(bookmark.id, {title:title, url:url}, function(){
-					let $node = $tree.find('li[data-id='+bookmark.id+']');
-					if(Bookmark.isFolder(bookmark)){
-						let org_cnt = $node.find('.cnt').text();
-						$node.find('.fold').html(h(title) + (org_cnt ? `<span class="cnt">${org_cnt}</span>` : ''));
-					} else {
-						$node.find('.remark')
-							.attr('title', title+"\n"+url)
-							.attr('href', url).text(title);
-					}
-					on_success();
-				});
-			} else {
-				location.reload();
-			}
-		});
-	};
-
-	const do_action = ()=>{
-		let action = Util.getParam('act');
-		switch(action){
-			case 'sorting':
-				{
-					let html = '<div>Sorting By:</div><ul class="sorting-conditions">';
-					html += '<li>Type: <select><option>Folder First</option><option>Link First</option><option>As Default</option></select>';
-					html += '<li>Spell: <select><option>A-Z</option><option>Z-A</option><option>As Default</option></select>';
-					html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
-					html += '</ul>';
-					show_confirm('Sorting bookmarks', html, function($dlg){
-
-					});
-				}
-				break;
-
-			case 'add':
-				update_bookmark_ui();
-				break;
-
-			case 'remove404':
-				{
-					let links = [];
-					plain_tree_nodes.forEach(function(item){
-						if(item.url){
-							links.push(item);
-						}
-					});
-					let total = links.length;
-					let html =
-						`<div class="bookmark-checking-timeout">Timeout: <input type="number" name="timeout" value="8" min="1" step="1"> Sec</div>
-					<div class="bookmark-checking run-info">
-						Progress: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
-						<progress max="${total}" value="0"></progress>
-						<span class="current-site" style="display:none;">Checking: <a href="" target="_blank"></a></span>
-					</div>`;
-
-					html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
-					html += '</ul>';
-					let op_html = `<span class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
-					op_html += `<span class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
-					op_html += `<span class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
-					op_html += '<span class="btn btn-outline btn-close">Close</span>';
-
-					show_dialog('Remove 404 bookmarks', html, op_html, function($dlg){
-						let $progress = $dlg.find('progress');
-						let $cnt = $dlg.find('.cnt');
-						let $percent = $dlg.find('.percent');
-						let $current = $dlg.find('.current-site');
-						let $error_list = $dlg.find('ul');
-						let $timeout_input = $dlg.find('input[name=timeout]');
-
-						let stop_sign = false;
-
-						let $start_btn = $dlg.find('.btn-start');
-						let $stop_btn = $dlg.find('.btn-stop');
-						let $delete_btn = $dlg.find('.btn-deletes');
-						let $close_btn = $dlg.find('.btn-close');
-
-						$close_btn.click(function(){
-							stop_sign = true;
-							$dlg.remove();
-						});
-
-						$dlg.delegate('.btn-remove', 'click', function(){
-							let id = $(this).closest('li').find('input[name=fails]').val();
-							chrome.bookmarks.remove(id);
-							$(this).closest('li').remove();
-						});
-
-						$delete_btn.click(function(){
-							let $inputs = $error_list.find('input[name=fails]');
-							let count = $inputs.size();
-							if(!count){
-								alert('No item selected');
-								return;
-							}
-							if(confirm('Confirm to remove '+count+' bookmarks?')){
-								$inputs.each(function(){
-									chrome.bookmark.remove(this.value);
-								});
-								location.reload();
-							}
-						});
-
-						$stop_btn.click(function(){
-							stop_sign = true;
-							$start_btn.show();
-							$stop_btn.hide();
-							$delete_btn.show();
-							$current.hide();
-							$timeout_input.removeAttr('disabled');
-						});
-
-						$start_btn.click(function(){
-							$start_btn.hide();
-							$stop_btn.show();
-							$delete_btn.hide();
-							$current.show();
-							$timeout_input.attr('disabled', 'disabled');
-							let timeout = parseInt($timeout_input.val(), 10) * 1000;
-							let tmp = links;
-							let current_cnt = 0;
-							let do_check = function(item, on_item_finish){
-								if(!item || stop_sign){
-									return;
-								}
-								$current.find('a').attr('href', item.url).text(item.title);
-								Util.check404(item.url, function(is_success, message){
-									on_item_finish(item, is_success, message);
-									do_check(tmp.shift(), on_item_finish);
-								},timeout)
-							};
-							do_check(tmp.shift(), function(item, is_success, message){
-								current_cnt++;
-								$cnt.html(current_cnt);
-								$percent.html((Math.round(100*current_cnt/total)) + '%');
-								$progress.val(current_cnt);
-								if(!is_success){
-									$error_list.show();
-									let html = `<li> 
-												<input type="checkbox" name="fails" value="${item.id}" checked> 
-												<a href="${h(item.url)}" target="_blank">${h(item.title)}</a> 
-												<span class="err">${h(message)}</span>
-												<span class="btn-remove link iconfont icon-trash"></span>
-											</li>`;
-									$(html).prependTo($error_list);
-								}
-							});
-						});
-					});
-				}
-				break;
-
-			case 'cleanup_folder':
-				{
-					let empty_nodes = Bookmark.foundEmptyFolders(plain_tree_nodes);
-					let folders_to_merge = Bookmark.foundMergeFolders(plain_tree_nodes);
-					let html = '';
-					if(empty_nodes.length){
-						html += '<div>Empty folders found:</div>';
-						html += `<ul style="max-height:100px; overflow-y:scroll;">`;
-						empty_nodes.forEach((item)=>{
-							html += `<li><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.parentTitle)} / <span class="iconfont icon-fold">${h(item.title)}</span> </li>`;
-						});
-						html += `</ul>`;
-					}
-					if(folders_to_merge.length){
-						html += '<div>Same name folders to merge:</div>';
-						html += '<ul style="max-height:200px; overflow-y:auto;">';
-						folders_to_merge.forEach((tmp)=>{
-							let [item, to_id] = tmp;
-							html += `<li><input type="checkbox" name="moves" value="${item.id}" data-to-id="${to_id}" checked> <span class="iconfont icon-fold">${h(item.title)}</span></li>`
-						});
-						html += '</ul>';
-					}
-
-					if(!html){
-						show_alert('Clean up folders', 'No empty bookmark folders found.');
-						return;
-					}
-					show_confirm('Clean up folders', html, function($dlg){
-						$dlg.find('input[name=deletes]:checked').each(function(){
-							chrome.bookmarks.remove(this.value);
-						});
-						$dlg.find('input[name=moves]:checked').each(function(){
-							let children = Bookmark.getChildren(plain_tree_nodes, this.value);
-							children.forEach((item)=>{
-								chrome.bookmarks.move(item.id, {
-									parentId: $(this).data('to-id')+""
-								});
-							});
-							chrome.bookmarks.remove(this.value);
-						});
-						location.reload();
-					});
-				}
-				break;
-
-			case 'cleanup_item':
-				{
-					let same_url_nodes = Bookmark.foundSameUrlNodes(plain_tree_nodes);
-					let html = '';
-
-					if(!same_url_nodes.length){
-						show_alert('Clean up item', 'No duplicate bookmark items found.');
-						return;
-					}
-
-					html += '<div>Duplicate bookmark found:</div>';
-					html += `<ul style="max-height:200px; overflow-y:auto;">`;
-					same_url_nodes.forEach((item)=>{
-						html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
-					});
-					html += '</ul>';
-					show_confirm('Clean up item', html, function($dlg){
-						$dlg.find('input[name=deletes]:checked').each(function(){
-							chrome.bookmarks.remove(this.value);
-						});
-						location.reload();
-					});
-				}
-				break;
-
-			case 'merge_similar':
-				break;
-
-		}
-		if(action){
-			Util.removeHash();
-		}
-	};
-
-	window.onhashchange = do_action;
-	do_action();
-
+//operate even binding
+$tree.delegate('.edit-btn', 'click', function(){
+	updateItem($(this).closest('li'));
 });
+
+$tree.delegate('.remove-btn', 'click', function(){
+	removeItem($(this).closest('li'));
+});
+
+$tree.delegate('.fold', 'click', function(){
+	let $item = $(this).closest('li');
+	$item.toggleClass('collapsed');
+	$item.find('li').addClass('collapsed');
+});
+
+const ACTIONS = {
+	'add': update_bookmark_ui,
+	'sorting': sorting,
+	'remove404': remove404,
+	'cleanup_folder': cleanupFolder,
+	'cleanup_item': cleanupItem,
+};
+
+const check_action = () => {
+	let action = Util.getParam('act');
+	if(!action){
+		return;
+	}
+	if(!ACTIONS[action]){
+		throw "No action founds";
+	}
+	ACTIONS[action]();
+	Util.removeHash();
+};
+
+renderTree(ROOT_ID, function(){
+	window.onhashchange = check_action;
+	check_action();
+}, 0);
