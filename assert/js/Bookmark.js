@@ -97,20 +97,28 @@ class Bookmark {
 		return ret;
 	};
 
-	static getFolderSelection = (rootId, parentId, callback)=>{
-		Bookmark.getSubTree(rootId, function(items){
-			let plain_items = Bookmark.convertPlain(items);
-			let html = '<select>';
-			plain_items.forEach(function(item){
-				if(Bookmark.isFolder(item)){
-					let tab = Util.strRepeat('&nbsp;',item.level*4);
-					let selection = parentId == rootId ? 'selected' : '';
-					html += `<option value="${item.id}" ${selection}>${tab} ${Util.escape(item.title)}</option>`;
-				}
-			});
-			html = html + `<select>`;
-			callback(html);
+	static getFolderSelection = (rootId, parentId, currentId)=>{
+		return new Promise((resolve)=>{
+			Bookmark.getSubTree(rootId, function(plain_items){
+				let html = '<select>';
+				let level_limit = null;
+				plain_items.forEach(function(item){
+					if(Bookmark.isFolder(item)){
+						let tab = Util.strRepeat('　',item.level*2);
+						let selection = parentId == item.id ? 'selected' : '';
+						if(currentId && item.id == currentId){
+							level_limit = item.level;
+						} else if(level_limit && level_limit >= item.level){
+							level_limit = null;
+						}
+						html += `<option value="${item.id}" ${selection} ${level_limit ? 'disabled':''}>${tab} ${Util.escape(item.title)}</option>`;
+					}
+				});
+				html = html + `<select>`;
+				resolve(html);
+			}, true);
 		});
+
 	};
 
 	static getType = (item)=>{
@@ -159,16 +167,22 @@ class Bookmark {
 		return chrome.bookmarks.create(bookmark, callback);
 	}
 
-	static move(id, destination, callback){
-		return chrome.bookmarks.move(id + '', destination, callback);
+	static move(id, destination){
+		return new Promise(resolve=>{
+			chrome.bookmarks.move(id + '', destination, resolve);
+		});
 	}
 
 	static update(id, changes, callback){
-		return chrome.bookmarks.update(id + '', changes, callback);
+		return new Promise((resolve => {
+			chrome.bookmarks.update(id + '', changes, resolve);
+		}));
 	}
 
-	static remove(id, callback){
-		return chrome.bookmarks.remove(id + '', callback);
+	static remove(id){
+		return new Promise(resolve => {
+			chrome.bookmarks.remove(id + '', resolve);
+		});
 	}
 
 	static removeTree(id, callback){

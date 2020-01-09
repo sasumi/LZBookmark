@@ -20,13 +20,15 @@
 .drop-list .sep {display:block; padding:0; height:0; margin:3px 5px; border-top:1px solid #dddddd;}
 .drop-list-left dd {left:auto; right:0; margin-right:0}
 .drop-list:hover dd {display:block;}
+.drop-list dd .disabled {color:#aaa; text-shadow:1px 1px 1px white; cursor:default !important; user-select:none}
+.drop-list dd .disabled:hover {background-color:transparent !important;}
 .drop-list.muloperate-disabled:hover dd {display:none;}
 .drop-list:not(.muloperate-disabled):hover dt:after {border-color:transparent;border-bottom-color:gray;top: 3px;}
 .drop-list:not(.muloperate-disabled):hover dt.btn:after {top:8px;}
 .drop-list:not(.muloperate-disabled):hover dt.btn:after {border-bottom-color:black;}
 .drop-list:not(.muloperate-disabled):hover dt.btn-weak:after {border-bottom-color:gray;}
 
-.context-menu {position:absolute;padding: 5px 0;border:1px solid #ccc;box-shadow:var(--light-shadow);background-color:#fff;border-radius: 3px;}
+.context-menu {position:absolute;padding: 5px 0;border:1px solid #ccc;box-shadow:var(--light-shadow);background-color: #fff;border-radius: 3px;}
 .context-menu-with-point {margin-top:5px;margin-left: -10px;}
 .context-menu-with-point:before,
 .context-menu-with-point:after {content:"";width:0;height:0;border:5px solid transparent;border-bottom-color:white;/* box-shadow:1px 0 1px #ccc; */position:absolute;top: 0;left: 10px;margin-top: -10px;z-index: 2;}
@@ -37,6 +39,9 @@
 .context-menu>span:last-child {display:block; padding:3px 10px; border-bottom:none}
 .context-menu>a:hover,
 .context-menu>span:hover {background-color:rgba(226, 237, 255, 0.58); text-shadow:1px 1px 1px white}
+.context-menu .disabled {color:#aaa; text-shadow:1px 1px 1px white; cursor:default !important; user-select:none}
+.context-menu .disabled:hover {background-color:transparent !important;}
+
 .context-menu .sep {display:block; padding:0; height:0; margin:3px 5px; border-top:1px solid #dddddd;}
 
 .simple-list {max-height:200px; overflow-y:auto;}
@@ -57,5 +62,4 @@ dialog .dialog-op .btn {margin-right:0.5em;}
 .toast.success {color:white;background-color: #1a70e1b8;}
 .toast.error {color: white;background: radial-gradient(#ff5b5b, #f143438f);}
 .toast-close-btn {color:gray; text-shadow:none; font-size:12px; margin-left:1em; color:#eee; text-decoration:underline; cursor:pointer;}
-.toast-close-btn:before {content:"\e61a"; font-family:var(--iconfont)}
 .toast-close-btn:hover {color:white;}
