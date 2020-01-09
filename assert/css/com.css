@@ -52,3 +52,10 @@ dialog .dialog-ti,
 dialog .dialog-ctn,
 dialog .dialog-op {max-width: 600px;margin:0 auto;}
 dialog .dialog-op .btn {margin-right:0.5em;}
+
+.toast {position:absolute;top:0;left:0;width:100%;box-sizing:border-box;padding:0.5em 0;text-align:center;z-index:9999;font-size: 16px;text-shadow: 1px 1px 1px grey;}
+.toast.success {color:white;background-color: #1a70e1b8;}
+.toast.error {color: white;background: radial-gradient(#ff5b5b, #f143438f);}
+.toast-close-btn {color:gray; text-shadow:none; font-size:12px; margin-left:1em; color:#eee; text-decoration:underline; cursor:pointer;}
+.toast-close-btn:before {content:"\e61a"; font-family:var(--iconfont)}
+.toast-close-btn:hover {color:white;}

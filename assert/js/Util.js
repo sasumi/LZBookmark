@@ -1,11 +1,11 @@
 class Util {
 	static EMPTY_FN = ()=>{};
 
-	static arrayWalkRecursive = (arr, callback, childrenKey = 'children')=>{
-		arr.forEach((item)=>{
-			callback(item);
+	static arrayWalkRecursive = (arr, callback, _level = 0, childrenKey = 'children') => {
+		arr.forEach((item) => {
+			callback(item, _level);
 			if(item[childrenKey]){
-				Util.arrayWalkRecursive(item[childrenKey], callback);
+				Util.arrayWalkRecursive(item[childrenKey], callback, _level + 1, childrenKey);
 			}
 		});
 	};

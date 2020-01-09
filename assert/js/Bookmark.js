@@ -97,15 +97,20 @@ class Bookmark {
 		return ret;
 	};
 
-	static getFolderSelection = (id)=>{
-		let html = '<select>';
-		Bookmark.walkChildren(id, function(item, level){
-			if(Bookmark.isFolder(item)){
-				let tab = Util.strRepeat('&nbsp;',level*4);
-				html += `<option value="${item.id}">${tab} ${Util.escape(item.title)}</option>`;
-			}
+	static getFolderSelection = (rootId, parentId, callback)=>{
+		Bookmark.getSubTree(rootId, function(items){
+			let plain_items = Bookmark.convertPlain(items);
+			let html = '<select>';
+			plain_items.forEach(function(item){
+				if(Bookmark.isFolder(item)){
+					let tab = Util.strRepeat('&nbsp;',item.level*4);
+					let selection = parentId == rootId ? 'selected' : '';
+					html += `<option value="${item.id}" ${selection}>${tab} ${Util.escape(item.title)}</option>`;
+				}
+			});
+			html = html + `<select>`;
+			callback(html);
 		});
-		return html + `<select>`;
 	};
 
 	static getType = (item)=>{
@@ -124,17 +129,6 @@ class Bookmark {
 
 	static getList(idList, callback){
 		return chrome.bookmarks.get(idList, callback);
-	}
-
-	static walkChildren(id, callback, _level = 0){
-		Bookmark.getChildren(id, function(items){
-			items.forEach((item)=>{
-				callback(item, _level);
-				if(item.children){
-					Bookmark.walkChildren(item.id, callback, _level+1);
-				}
-			});
-		})
 	}
 
 	static getChildren(id, callback, asPlain = false){
@@ -200,11 +194,7 @@ class Bookmark {
 			case Bookmark.OPEN_NEW_WIN:
 				chrome.windows.getCurrent(null, function(wd){
 					chrome.windows.create({
-						url: url,
-						height: wd.height,
-						left: wd.left,
-						top: wd.top,
-						width: wd.width
+						url: url
 					}, callback);
 				});
 				break;
@@ -213,10 +203,6 @@ class Bookmark {
 				chrome.windows.getCurrent(null, function(wd){
 					chrome.windows.create({
 						url: url,
-						height: wd.height,
-						left: wd.left,
-						top: wd.top,
-						width: wd.width,
 						incognito: true
 					}, callback);
 				});

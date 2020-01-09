@@ -40,6 +40,29 @@ class UI {
 		on_show($dlg);
 	};
 
+	static showToast(message, type = 'success', onFinish, timeout = 1000){
+		let $toast = $('.toast');
+		if(!$toast.size()){
+			$toast = $('<div class="toast" style="none"><span class="toast-content"></span><span class="toast-close-btn">Close</span></div>').appendTo('body');
+			$toast.find('.toast-close-btn').click(()=>{
+				clearTimeout($toast.timeout);
+				$toast.stop().hide();
+			});
+		}
+		$toast[0].className = 'toast ' + type;
+		clearTimeout($toast.timeout);
+		$toast.find('.toast-content').html(message);
+		$toast.stop().css('opacity', 0).show().animate({opacity: 1}, 'fast', function(){
+			$toast.timeout = setTimeout(() => {
+				$toast.animate({opacity: 0}, () => {
+					$toast.hide();
+				});
+			}, timeout);
+		});
+		//force call onFinish anywhere
+		setTimeout(onFinish, timeout + 500);
+	}
+
 	static getFaviconHtml(url){
 		return '<span class="favicon" style=\'background-image:url("chrome://favicon/size/16@1x/'+url+'\');"></span>';
 	}

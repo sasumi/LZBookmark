@@ -14,6 +14,7 @@ const removeLink = (bookmark) => {
 	let $li = $tree.find('[data-id=' + bookmark.id + ']');
 	Bookmark.remove(bookmark.id, function(){
 		$li.remove();
+		UI.showToast('Bookmark removed');
 	});
 };
 
@@ -38,6 +39,7 @@ const removeFolder = (bookmark) => {
 		UI.showConfirm('Confirm to remove folder?', sub_links_html, function(){
 			Bookmark.removeTree(bookmark.id, function(){
 				$li.remove();
+				UI.showToast('Folder removed');
 			});
 		})
 	});
@@ -75,9 +77,9 @@ const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
 		let menu_html;
 		if(isFolder){
 			menu_html =
-				`<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In New Window</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}">Open All Bookmarks In Incognito Window</span>
+				`<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open All Bookmarks</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open All Bookmarks In New Window</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open All Bookmarks In Incognito Window</span>
 				<span class="sep"></span>
 				<span class="iconfont icon-add-folder" data-cmd="addFolder" data-id="${item.id}">Add Folder</span> 
 				<span class="iconfont icon-edit edit-btn" data-cmd="editFolder" data-id="${item.id}">Edit</span>
@@ -112,40 +114,43 @@ const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
 
 const addBookmark = (parentId, callback) => {
 	callback = callback || Util.EMPTY_FN;
-	let folder_selection_html = '<li>' + Bookmark.getFolderSelection(parentId) + '</li>';
-	let html = `<ul class="form-item full-item">
-						${folder_selection_html}
+	Bookmark.getFolderSelection(ROOT_ID, parentId, function(folder_selection_html){
+		let html = `<ul class="form-item full-item">
+						<li>${folder_selection_html}</li>
 						<li><input type="text" required name="title" placeholder="Title" value=""></li>
 						<li><input type="url" required name="url" placeholder="Url" value=""></li>
 					</ul>`;
-	UI.showConfirm(`Add Bookmark`, html, function($dlg){
-		let parentId = $dlg.find('select').val();
-		let title = $.trim($dlg.find('[name=title]').val());
-		let url = $.trim($dlg.find('[name=url]').val());
-		Bookmark.create({
-			title: title,
-			url: url,
-			parentId: parentId
-		}, function(){
-			//@todo add bookmark
-			callback();
-		})
+		UI.showConfirm(`Add Bookmark`, html, function($dlg){
+			let parentId = $dlg.find('select').val();
+			let title = $.trim($dlg.find('[name=title]').val());
+			let url = $.trim($dlg.find('[name=url]').val());
+			Bookmark.create({
+				title: title,
+				url: url,
+				parentId: parentId
+			}, function(){
+				UI.showToast('Bookmark added');
+				//@todo add bookmark
+				callback();
+			})
+		});
 	});
 };
 
 const addFolder = (bookmark) => {
 	let parentId = bookmark ? bookmark.id : null;
-	let folder_selection_html = '<li>' + Bookmark.getFolderSelection(parentId) + '</li>';
-	let html = `<ul class="form-item full-item">
-					${folder_selection_html}
+	Bookmark.getFolderSelection(ROOT_ID, parentId, function(folder_selection_html){
+		let html = `<ul class="form-item full-item">
+					<li>${folder_selection_html}</li>
 					<li><input type="text" required name="title" placeholder="Title" value=""></li>
 				</ul>`;
-	UI.showConfirm(`Add Sub Folder`, html, function($dlg){
-		let title = $.trim($dlg.find('[name=title]').val());
-		let url = $.trim($dlg.find('[name=url]').val());
-		let parentId = $dlg.find('select').val();
-		Bookmark.create({title: title, url: url, parentId: parentId}, function(){
-			//
+		UI.showConfirm(`Add Sub Folder`, html, function($dlg){
+			let title = $.trim($dlg.find('[name=title]').val());
+			let url = $.trim($dlg.find('[name=url]').val());
+			let parentId = $dlg.find('select').val();
+			Bookmark.create({title: title, url: url, parentId: parentId}, function(){
+				UI.showToast('Folder added');
+			});
 		});
 	});
 };
@@ -157,35 +162,19 @@ const sorting = (bookmark) => {
 	html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
 	html += '</ul>';
 	UI.showConfirm('Sorting bookmarks', html, function($dlg){
-
+		UI.showToast('Bookmark sorted');
 	});
 };
 
-const updateFolder = (bookmark, on_success) => {
-	on_success = on_success || Util.EMPTY_FN;
-	let folder_selection_html = '<li>' + Bookmark.getFolderSelection(bookmark.parentId) + '</li>';
-	let html = `<ul class="form-item full-item">
-					${folder_selection_html}
-					<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
-				</ul>`;
-	UI.showConfirm(`Update Folder`, html, function($dlg){
-		let title = $.trim($dlg.find('[name=title]').val());
-		let url = $.trim($dlg.find('[name=url]').val());
-		Bookmark.update(bookmark.id, {title: title, url: url}, function(){
-			renderNode(bookmark.id, on_success);
-		});
-	});
-};
-
-const openFolder = (bookmark, param)=>{
-	let links = [];
+const openFolder = (bookmark, param, callback)=>{
 	Bookmark.getSubTree(bookmark.id, function(items){
 		items.forEach(function(item){
 			if(!Bookmark.isFolder(item)){
-				links.push(item.url);
+				Bookmark.openLink(item.url, param.type);
 			}
-		})
-	});
+		});
+		callback();
+	}, true);
 };
 
 const openLink = (bookmark, param) => {
@@ -202,21 +191,24 @@ const editLink = (bookmark) => {
 		let url = $.trim($dlg.find('[name=url]').val());
 		Bookmark.update(bookmark.id, {title: title, url: url}, function(){
 			renderNode(bookmark.id);
+			UI.showToast('Bookmark updated');
 		});
 	});
 };
 
 const editFolder = (bookmark) => {
-	let folder_selection_html = '<li>' + Bookmark.getFolderSelection(bookmark.parentId) + '</li>';
-	let html = `<ul class="form-item full-item">
-					${folder_selection_html}
+	Bookmark.getFolderSelection(ROOT_ID, bookmark.parentId, function(folder_selection_html){
+		let html = `<ul class="form-item full-item">
+					<li>${folder_selection_html}</li>
 					<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
 				</ul>`;
-	UI.showConfirm(`Update Bookmark`, html, function($dlg){
-		let title = $.trim($dlg.find('[name=title]').val());
-		let parentId = $dlg.find('select').val();
-		Bookmark.update(bookmark.id, {title: title, parentId: parentId}, function(){
-			renderNode(bookmark.id);
+		UI.showConfirm(`Update Bookmark`, html, function($dlg){
+			let title = $.trim($dlg.find('[name=title]').val());
+			let parentId = $dlg.find('select').val();
+			Bookmark.update(bookmark.id, {title: title, parentId: parentId}, function(){
+				renderNode(bookmark.id);
+				UI.showToast('Folder updated');
+			});
 		});
 	});
 };
