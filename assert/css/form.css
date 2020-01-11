@@ -18,7 +18,7 @@ input:-webkit-autofill:focus {-webkit-box-shadow: 0 0 0 50px white inset;-webkit
 [type=button]:not([disabled]):focus,
 [type=submit]:not([disabled]):focus,
 [type=reset]:not([disabled]):focus,
-select:not([disabled]):focus {box-shadow:var(--light-shadow); outline:none;}
+select:not([disabled]):focus {box-shadow:var(--glow-shadow); color:var(--color)}
 
 .btn[disabled],
 .btn-disabled,
@@ -81,7 +81,17 @@ input[type=number]:hover,
 input[type=url]:hover,
 input[type=email]:hover,
 input[type=password]:hover,
-input[type=search]:hover {box-shadow: 0px 2px 1px 0px #cccccc7d;border-color:var(--color);outline:none;}
+input[type=search]:hover,
+
+select:focus,
+textarea:focus,
+input[type=text]:focus,
+input[type=date]:focus,
+input[type=number]:focus,
+input[type=url]:focus,
+input[type=email]:focus,
+input[type=password]:focus,
+input[type=search]:focus {box-shadow: 0px 2px 1px 0px #cccccc7d;border-color:var(--color);outline:none;}
 
 input[type=number] {width:80px;text-align:center;}
 

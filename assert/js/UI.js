@@ -1,27 +1,34 @@
 import {Util} from "./Util.js";
 
 class UI {
-	static showConfirm(title, content, on_confirm, on_cancel){
-		let op_html = `<span class="btn btn-primary btn-confirm">Confirm</span> <span class="btn btn-outline btn-cancel">Cancel</span>`;
-		UI.showDialog(title, content, op_html, function($dlg){
-			on_cancel = on_cancel || Util.EMPTY_FN;
-			$dlg.find('.btn-cancel').click(function(){
-				if(on_cancel($dlg) !== false){
-					$dlg.remove();
-				}
-			});
-			$dlg.find('.btn-confirm').click(function(){
-				if(on_confirm($dlg) !== false){
-					$dlg.remove();
-				}
+	static showConfirm(title, content){
+		return new Promise((resolve, reject)=>{
+			let op_html = `<span class="btn btn-primary btn-confirm" tabindex="0">Confirm</span> <span class="btn btn-outline btn-cancel" tabindex="0">Cancel</span>`;
+			UI.showDialog(title, content, op_html, function($dlg){
+				$dlg.find('.btn-cancel').commit(e=>{
+					if(reject() !== false){
+						$dlg.remove();
+					}
+				});
+				$dlg.find('.btn-confirm').commit(e=>{
+					if(resolve($dlg) !== false){
+						$dlg.remove();
+					}
+				});
 			});
 		});
 	};
 
+	static showForm(title, content, buttonLabels = {save: 'Save', cancel: 'Cancel'}){
+		return new Promise((resolve, reject) => {
+
+		})
+	}
+
 	static showAlert(title, content, on_ok){
-		let op_html = `<span class="btn btn-outline btn-ok">Close</span>`;
+		let op_html = `<span class="btn btn-outline btn-ok" tabindex="0">Close</span>`;
 		UI.showDialog(title, content, op_html, function($dlg){
-			$dlg.find('.btn-ok').click(function(){
+			$dlg.find('.btn-ok').commit(e=>{
 				on_ok = on_ok || Util.EMPTY_FN;
 				if(on_ok($dlg) !== false){
 					$dlg.remove();
@@ -43,7 +50,7 @@ class UI {
 	static showToast(message, type = 'success', onFinish, timeout = 1000){
 		let $toast = $('.toast');
 		if(!$toast.size()){
-			$toast = $('<div class="toast" style="none"><span class="toast-content"></span><span class="toast-close-btn">Close</span></div>').appendTo('body');
+			$toast = $('<div class="toast" style="none"><span class="toast-content"></span><span class="toast-close-btn" tabindex="0">Close</span></div>').appendTo('body');
 			$toast.find('.toast-close-btn').click(()=>{
 				clearTimeout($toast.timeout);
 				$toast.stop().hide();

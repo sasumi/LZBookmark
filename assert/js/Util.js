@@ -48,6 +48,14 @@ class Util {
 		return s;
 	};
 
+	static buttonOnSubmit($btn, handler){
+		$btn.click(handler);
+		$btn.on('keydown', e=>{
+			if(e.which === 13){
+				handler();
+			}
+		});
+	}
 
 	/**
 	 * get param

@@ -36,7 +36,7 @@ const removeFolder = (bookmark) => {
 			sub_links_html += `<li>${UI.getFaviconHtml(item.url)} <a href="${h(item.url)}" target="_blank">${h(item.title)}</a></li>`;
 		});
 		sub_links_html += `</ul>`;
-		UI.showConfirm('Confirm to remove folder?', sub_links_html, function(){
+		UI.showConfirm('Confirm to remove folder?', sub_links_html).then(()=>{
 			Bookmark.removeTree(bookmark.id, function(){
 				$li.remove();
 				UI.showToast('Folder removed');
@@ -81,23 +81,23 @@ const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
 		if(isFolder){
 			let edit_disabled = item.id == ROOT_ID ? 'disabled' : '';
 			menu_html =
-				`<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open All</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open All In New Window</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open All In Incognito Window</span>
+				`<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open All</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open All In New Window</span>
+				<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open All In Incognito Window</span>
 				<span class="sep"></span>
-				<span class="iconfont icon-add-folder" data-cmd="addFolder" data-id="${item.id}">Add Folder</span> 
-				<span class="${edit_disabled} iconfont icon-edit edit-btn" data-cmd="editFolder" data-id="${item.id}">Edit</span>
-				<span class="${edit_disabled} iconfont icon-trash" data-cmd="removeFolder" data-id="${item.id}">Remove</span>`;
+				<span class="iconfont icon-add-folder" data-cmd="addFolder" tabindex="0" data-id="${item.id}">Add Folder</span> 
+				<span class="${edit_disabled} iconfont icon-edit edit-btn" tabindex="0" data-cmd="editFolder" data-id="${item.id}">Edit</span>
+				<span class="${edit_disabled} iconfont icon-trash" tabindex="0" data-cmd="removeFolder" tabindex="0" data-id="${item.id}">Remove</span>`;
 		}else{
 			menu_html =
-				`<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_CURRENT_TAB}"}'>Open</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB}"}'>Open in New Tab</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="Background" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open in Background</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="NewWindow" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open in New Window</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" data-value="Incognito" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open in New Incognito Window</span>
+				`<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_CURRENT_TAB}"}'>Open</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB}"}'>Open in New Tab</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="Background" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open in Background</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewWindow" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open in New Window</span>
+				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="Incognito" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open in New Incognito Window</span>
 				<span class="sep"></span>
-				<span class="iconfont icon-edit edit-btn" data-cmd="editLink" data-id="${item.id}">Edit</span>
-				<span class="iconfont icon-trash" data-cmd="removeLink" data-id="${item.id}">Remove</span>`;
+				<span class="iconfont icon-edit edit-btn" tabindex="0" data-cmd="editLink" tabindex="0" data-id="${item.id}">Edit</span>
+				<span class="iconfont icon-trash" tabindex="0" data-cmd="removeLink" data-id="${item.id}">Remove</span>`;
 		}
 		sub_html += `
 					<dl class="drop-list drop-list-left">
@@ -124,7 +124,7 @@ const addBookmark = (parentId, callback) => {
 						<li><input type="text" required name="title" placeholder="Title" value=""></li>
 						<li><input type="url" required name="url" placeholder="Url" value=""></li>
 					</ul>`;
-		UI.showConfirm(`Add Bookmark`, html, function($dlg){
+		UI.showConfirm(`Add Bookmark`, html).then(($dlg)=>{
 			let parentId = $dlg.find('select').val();
 			let title = $.trim($dlg.find('[name=title]').val());
 			let url = $.trim($dlg.find('[name=url]').val());
@@ -147,7 +147,7 @@ const addFolder = (bookmark) => {
 					<li>${folder_selection_html}</li>
 					<li><input type="text" required name="title" placeholder="Folder Name" value=""></li>
 				</ul>`;
-		UI.showConfirm(`Add Sub Folder`, html, ($dlg)=>{
+		UI.showConfirm(`Add Sub Folder`, html).then(($dlg)=>{
 			let title = $.trim($dlg.find('[name=title]').val());
 			let url = $.trim($dlg.find('[name=url]').val());
 			let parentId = $dlg.find('select').val();
@@ -165,7 +165,7 @@ const sorting = (bookmark) => {
 	html += '<li>Spell: <select><option>A-Z</option><option>Z-A</option><option>As Default</option></select>';
 	html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
 	html += '</ul>';
-	UI.showConfirm('Sorting bookmarks', html, function($dlg){
+	UI.showConfirm('Sorting bookmarks', html).then(($dlg)=>{
 		UI.showToast('Bookmark sorted');
 	});
 };
@@ -190,7 +190,7 @@ const editLink = (bookmark) => {
 					<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
 					<li><input type="url" required name="url" placeholder="Url" value="${h(bookmark.url)}"></li>
 				</ul>`;
-	UI.showConfirm(`Update Bookmark`, html, function($dlg){
+	UI.showConfirm(`Update Bookmark`, html).then(($dlg)=>{
 		let title = $.trim($dlg.find('[name=title]').val());
 		let url = $.trim($dlg.find('[name=url]').val());
 		Bookmark.update(bookmark.id, {title: title, url: url}).then(()=>{
@@ -206,7 +206,7 @@ const editFolder = (bookmark) => {
 					<li>${folder_selection_html}</li>
 					<li><input type="text" required name="title" placeholder="Folder Name" value="${h(bookmark.title)}"></li>
 				</ul>`;
-		UI.showConfirm(`Edit Folder`, html, function($dlg){
+		UI.showConfirm(`Edit Folder`, html).then(($dlg)=>{
 			let title = $.trim($dlg.find('[name=title]').val());
 			let parentId = $dlg.find('select').val();
 			let sync = [];
@@ -254,7 +254,7 @@ const cleanupFolder = (bookmark) => {
 			UI.showAlert('Clean up folders', 'No empty bookmark folders found.');
 			return;
 		}
-		UI.showConfirm('Clean up folders', html, function($dlg){
+		UI.showConfirm('Clean up folders', html).then(($dlg)=>{
 			$dlg.find('input[name=deletes]:checked').each(function(){
 				Bookmark.remove(this.value);
 			});
@@ -287,7 +287,7 @@ const cleanupItem = (bookmark) => {
 			html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
 		});
 		html += '</ul>';
-		UI.showConfirm('Clean up item', html, function($dlg){
+		UI.showConfirm('Clean up item', html).then(($dlg)=>{
 			$dlg.find('input[name=deletes]:checked').each(function(){
 				Bookmark.remove(this.value);
 			});
@@ -315,10 +315,10 @@ const remove404 = (id = ROOT_ID) => {
 
 		html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
 		html += '</ul>';
-		let op_html = `<span class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
-		op_html += `<span class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
-		op_html += `<span class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
-		op_html += '<span class="btn btn-outline btn-close">Close</span>';
+		let op_html = `<span tabindex="0" class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
+		op_html += `<span tabindex="0" class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
+		op_html += `<span tabindex="0" class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
+		op_html += '<span tabindex="0" class="btn btn-outline btn-close">Close</span>';
 
 		UI.showDialog('Remove 404', html, op_html, function($dlg){
 			let $progress = $dlg.find('progress');
