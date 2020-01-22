@@ -83,6 +83,15 @@ class Util {
 		history.pushState("", document.title, window.location.pathname
 			+ window.location.search);
 	}
+
+	static getTextNode = (node)=>{
+		let all = [];
+		for(node = node.firstChild; node; node = node.nextSibling){
+			if(node.nodeType === 3) all.push(node);
+			else all = all.concat(Util.getTextNode(node));
+		}
+		return all;
+	};
 }
 
 export {Util};

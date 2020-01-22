@@ -1,7 +1,9 @@
 {
 	"Add": "添加",
+	"About":"关于",
 	"Manager": "管理",
 	"Sorting": "排序",
+	"Keywords": "关键字",
 	"Remove 404 items": "移除失效链接",
 	"Clean up folder": "清理文件夹",
 	"Clean up items": "清理重复链接",
@@ -41,7 +43,7 @@
 	"Older First": "最旧日期优先",
 	"Sub folder recursive": "子文件夹递归处理",
 	"Recursive": "递归",
-	"Sorting bookmarks": "正在进行收藏夹排序",
+	"Sorting bookmarks": "收藏夹排序",
 	"Bookmark sorted": "收藏夹已排序",
 	"Title": "标题",
 	"Url": "链接地址",

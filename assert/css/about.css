@@ -5,6 +5,8 @@
 
 html {background-color:#888;}
 body {padding:20px; background-color:#888;}
-.page {background-color:white; padding:20px; box-shadow:1px 1px 20px #555; }
+.page {background-color:white; padding:20px 20px 30px; box-shadow:1px 1px 20px #555; }
 h1 span {background:linear-gradient(90deg, #ff8a00, #e52e71);-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;-webkit-background-clip:text;text-shadow:none;}
 h1:before {content:""; display:inline-block; width:30px; height:30px; background:url("../img/icon.png") no-repeat; background-size:contain; vertical-align:middle; margin:0 5px 0 0;}
+h1 {margin-bottom:0.5em;}
+img[alt=WeChatAccount] {width:100px; vertical-align:top}

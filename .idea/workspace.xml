@@ -4,13 +4,18 @@
     <list default="true" id="b28256c7-71f4-4339-831e-c724fc92808c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/css/com.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/com.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/css/global.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/global.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/form.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/form.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/options.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/about.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/css/popup.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/popup.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/js/Bookmark.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Bookmark.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/I18N.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/I18N.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/UI.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/UI.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/Util.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Util.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/a.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/background.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/popup.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/options.html" beforeDir="false" afterPath="$PROJECT_DIR$/options.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/i18n/zh_CN.json" beforeDir="false" afterPath="$PROJECT_DIR$/i18n/zh_CN.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/manifest.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/options.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/popup.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -43,16 +48,16 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/assert/js" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/assert/img" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode.JSON" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\htdocs\bookmark\assert\img" />
       <recent name="D:\htdocs\bookmark\assert\js" />
       <recent name="D:\htdocs\bookmark\_locales" />
-      <recent name="D:\htdocs\bookmark\assert\img" />
       <recent name="D:\htdocs\bookmark" />
       <recent name="D:\htdocs\bookmark\assert\css" />
     </key>
@@ -98,7 +103,7 @@
       <workItem from="1578995718334" duration="589000" />
       <workItem from="1579048634935" duration="1528000" />
       <workItem from="1579591546394" duration="8211000" />
-      <workItem from="1579654132717" duration="14356000" />
+      <workItem from="1579654132717" duration="17630000" />
     </task>
     <servers />
   </component>

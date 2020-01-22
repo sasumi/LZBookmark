@@ -12,7 +12,7 @@
 </head>
 <body>
 <div class="manager-op">
-	<input type="search" name="" placeholder="Search Keywords" style="width:200px;">
+	<input type="search" name="" placeholder="{Keywords}" style="width:200px;">
 	<a href="#act=addBookmark" class="link iconfont icon-add">{Add}</a>
 	<dl class="drop-list drop-list-left">
 		<dt>
@@ -26,12 +26,13 @@
 			<a href="#act=cleanupItem" class="iconfont icon-cleanup">{Clean up items}</a>
 			<a href="#act=merge_similar" class="iconfont icon-merge">{Merge Similar items}</a>
 			<span class="sep"></span>
-			<a href="options.html">{Options}</a>
+			<a href="about.html" target="_blank">{About}</a>
 		</dd>
 	</dl>
 </div>
 <ul class="bookmark-tree" id="bookmark-tree">
 </ul>
+<script src="assert/js/I18nPage.js" type="module"></script>
 <script src="assert/js/popup.js" type="module"></script>
 </body>
 </html>

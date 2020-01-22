@@ -459,15 +459,6 @@ const hide_menu = ()=>{
 	}
 };
 
-//i18n
-const getTextNode = (node)=>{
-	let all = [];
-	for(node = node.firstChild; node; node = node.nextSibling){
-		if(node.nodeType === 3) all.push(node);
-		else all = all.concat(getTextNode(node));
-	}
-	return all;
-};
 
 const Actions = {
 	addBookmark: addBookmark,
@@ -544,15 +535,6 @@ $body.delegate('[data-cmd]', 'click', function(){
 });
 
 I18N.loadLanguageFile(I18N.getCurrentLanguage()).then(()=>{
-	getTextNode(document.body).forEach(node => {
-		let v = node.nodeValue;
-		let text = v.replace(/{([^{]+)}/ig, (matches, org_text) => {
-			return I18N._(org_text);
-		});
-		if(text.length){
-			node.nodeValue = text;
-		}
-	});
 	renderTree(ROOT_ID, function(){
 		const check_action = () => {
 			let action = Util.getParam('act');

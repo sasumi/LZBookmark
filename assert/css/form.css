@@ -34,13 +34,13 @@ select[disabled] {border-color:#cccccc !important; cursor:default !important;col
 .btn-primary:not([disabled]),
 [type=submit]:not([disabled]),
 [type=submit]:not([disabled]):focus,
-.btn-primary:not([disabled]):focus {background-image:linear-gradient(#1a75f2, #1a70e1);color:white;border:1px solid var(--color);outline:none;text-shadow: none;}
+.btn-primary:not([disabled]):focus {background-image:linear-gradient(#1a75f2, #1a70e1);color:white;border:1px solid var(--color);outline:none;/* text-shadow: none; */}
 
 .btn-primary:not([disabled]):hover,
 [type=submit]:not([disabled]):hover,
 .btn-primary:not([disabled]):hover {background-image:linear-gradient(#1a79ff, #1a79f9); color:white; box-shadow:var(--light-shadow)}
 
-.btn-outline {background:#fff;border: 1px solid #aaa;border-radius:var(--element-radius);padding-left:0.5em;padding-right:0.5em;}
+.btn-outline {background:#fff;border: 1px solid #aaa;border-radius:var(--element-radius);}
 .btn-outline:hover {border-color:var(--color);color: var(--color);}
 
 select,

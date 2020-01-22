@@ -63,6 +63,18 @@ class I18N {
 		});
 	}
 
+	static transUI(message){
+		if(!message){
+			return message;
+		}
+		if(!/{([^{]+)}/.test(message)){
+			return message;
+		}
+		return message.replace(/{([^{]+)}/ig, (matches, org_text) => {
+			return I18N._(org_text);
+		});
+	}
+
 	static _(message, param = []){
 		if(!I18N.LANGUAGE_CONFIG[I18N.currentLanguage]){
 			console.warn('no language loaded', I18N.currentLanguage);

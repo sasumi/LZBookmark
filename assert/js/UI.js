@@ -6,7 +6,7 @@ const _ = I18N._;
 class UI {
 	static showConfirm(title, content){
 		return new Promise((resolve, reject)=>{
-			let op_html = `<span class="btn btn-primary btn-confirm" tabindex="0">${_('Confirm')}</span> <span class="btn btn-outline btn-cancel" tabindex="0">${_('Cancel')}</span>`;
+			let op_html = `<span class="btn btn-primary btn-confirm" tabindex="0">${_('Confirm')}</span> <span class="btn btn-outline btn-cancel" tabindex="0">${_('Close')}</span>`;
 			UI.showDialog(title, content, op_html, function($dlg){
 				$dlg.find('.btn-cancel').commit(e=>{
 					if(reject() !== false){
@@ -21,12 +21,6 @@ class UI {
 			});
 		});
 	};
-
-	static showForm(title, content, buttonLabels = {save: _('Save'), cancel: _('Cancel')}){
-		return new Promise((resolve, reject) => {
-
-		})
-	}
 
 	static showAlert(title, content, on_ok){
 		let op_html = `<span class="btn btn-outline btn-ok" tabindex="0">${_('Close')}</span>`;
