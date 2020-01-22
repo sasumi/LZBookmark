@@ -1,7 +1,8 @@
+import {I18N} from "./I18N.js";
 import {Bookmark} from "./Bookmark.js";
 import {Util} from "./Util.js";
 import {UI} from "./UI.js";
-
+const _ = I18N._;
 const $body = $('body');
 const h = Util.escape;
 const $tree = $('#bookmark-tree');
@@ -14,7 +15,7 @@ const removeLink = (bookmark) => {
 	let $li = $tree.find('[data-id=' + bookmark.id + ']');
 	Bookmark.remove(bookmark.id).then(function(){
 		$li.remove();
-		UI.showToast('Bookmark removed');
+		UI.showToast(_('Bookmark removed'));
 	});
 };
 
@@ -31,15 +32,15 @@ const removeFolder = (bookmark) => {
 		items.filter((item) => {
 			return !Bookmark.isFolder(item);
 		});
-		let sub_links_html = 'Children links found:<ul class="simple-list">';
+		let sub_links_html = _('Children links found')+':<ul class="simple-list">';
 		items.forEach((item) => {
 			sub_links_html += `<li>${UI.getFaviconHtml(item.url)} <a href="${h(item.url)}" target="_blank">${h(item.title)}</a></li>`;
 		});
 		sub_links_html += `</ul>`;
-		UI.showConfirm('Confirm to remove folder?', sub_links_html).then(()=>{
+		UI.showConfirm(_('Confirm to remove folder'), sub_links_html).then(()=>{
 			Bookmark.removeTree(bookmark.id, function(){
 				$li.remove();
-				UI.showToast('Folder removed');
+				UI.showToast(_('Folder removed'));
 			});
 		})
 	});
@@ -81,31 +82,24 @@ const getTreeHtml = (children, initLevel = 0, collapseLevel = 0) => {
 		if(isFolder){
 			let edit_disabled = item.id == ROOT_ID ? 'disabled' : '';
 			menu_html =
-				`<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open All</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open All In New Window</span>
-				<span class="iconfont icon-add-folder" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open All In Incognito Window</span>
-				<span class="sep"></span>
-				<span class="iconfont icon-add-folder" data-cmd="addFolder" tabindex="0" data-id="${item.id}">Add Folder</span> 
-				<span class="${edit_disabled} iconfont icon-edit edit-btn" tabindex="0" data-cmd="editFolder" data-id="${item.id}">Edit</span>
-				<span class="${edit_disabled} iconfont icon-trash" tabindex="0" data-cmd="removeFolder" tabindex="0" data-id="${item.id}">Remove</span>`;
+			   `<span class="context-menu-item bookmark-open-by bookmark-open-by-tab-back" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>${_('Open All')}</span>
+				<span class="context-menu-item bookmark-open-by bookmark-open-by-new-win" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>${_('Open All In New Window')}</span>
+				<span class="context-menu-item bookmark-open-by bookmark-open-by-private" data-cmd="openFolder" tabindex="0" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>${_('Open All In Incognito Window')}</span>
+				<span class="context-menu-sep"></span>
+				<span class="context-menu-item iconfont icon-sort" data-cmd="sorting" tabindex="0" data-id="${item.id}">${_('Sort Folder')}</span>
+				<span class="context-menu-item iconfont icon-add-folder" data-cmd="addFolder" tabindex="0" data-id="${item.id}">${_('Add Folder')}</span> 
+				<span class="context-menu-item ${edit_disabled} iconfont icon-edit edit-btn" tabindex="0" data-cmd="editFolder" data-id="${item.id}">${_('Edit')}</span>
+				<span class="context-menu-item ${edit_disabled} iconfont icon-trash" tabindex="0" data-cmd="removeFolder" tabindex="0" data-id="${item.id}">${_('Remove')}</span>`;
 		}else{
 			menu_html =
-				`<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_CURRENT_TAB}"}'>Open</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB}"}'>Open in New Tab</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="Background" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_TAB_BACK}"}'>Open in Background</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="NewWindow" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>Open in New Window</span>
-				<span class="iconfont icon-add-folder" data-cmd="openLink" tabindex="0" data-value="Incognito" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>Open in New Incognito Window</span>
-				<span class="sep"></span>
-				<span class="iconfont icon-edit edit-btn" tabindex="0" data-cmd="editLink" tabindex="0" data-id="${item.id}">Edit</span>
-				<span class="iconfont icon-trash" tabindex="0" data-cmd="removeLink" data-id="${item.id}">Remove</span>`;
+			   `<span class="context-menu-item bookmark-open-by bookmark-open-by-tab-back" data-cmd="openLink" tabindex="0" data-value="NewTab" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_CURRENT_TAB}"}'>${_('Open in New Tab')}</span>
+				<span class="context-menu-item bookmark-open-by bookmark-open-by-new-win" data-cmd="openLink" tabindex="0" data-value="NewWindow" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_NEW_WIN}"}'>${_('Open in New Window')}</span>
+				<span class="context-menu-item bookmark-open-by bookmark-open-by-private" data-cmd="openLink" tabindex="0" data-value="Incognito" data-id="${item.id}" data-param='{"type":"${Bookmark.OPEN_INC_WIN}"}'>${_('Open in New Incognito Window')}</span>
+				<span class="context-menu-sep"></span>
+				<span class="context-menu-item iconfont icon-edit edit-btn" tabindex="0" data-cmd="editLink" tabindex="0" data-id="${item.id}">${_('Edit')}</span>
+				<span class="context-menu-item iconfont icon-trash" tabindex="0" data-cmd="removeLink" data-id="${item.id}">${_('Remove')}</span>`;
 		}
-		sub_html += `
-					<dl class="drop-list drop-list-left">
-						<dt><span class="iconfont icon-option-vertical"></span></dt>
-						<dd>
-							${menu_html}
-						</dd>
-					</dl></div>`;
+		sub_html += `<span class="item-operator-trigger"></span><div class="ops-menu">${menu_html}</div></div>`;
 
 		if(isFolder && children_count){
 			sub_html += `<ul>` + getTreeHtml(item.children, initLevel + 1, collapseLevel) + `</ul>`;
@@ -121,10 +115,10 @@ const addBookmark = (parentId, callback) => {
 	Bookmark.getFolderSelection(ROOT_ID, parentId).then((folder_selection_html)=>{
 		let html = `<ul class="form-item full-item">
 						<li>${folder_selection_html}</li>
-						<li><input type="text" required name="title" placeholder="Title" value=""></li>
-						<li><input type="url" required name="url" placeholder="Url" value=""></li>
+						<li><input type="text" required name="title" placeholder="${_('Title')}" value=""></li>
+						<li><input type="url" required name="url" placeholder="${_('Url')}" value=""></li>
 					</ul>`;
-		UI.showConfirm(`Add Bookmark`, html).then(($dlg)=>{
+		UI.showConfirm(_('Add Bookmark'), html).then(($dlg)=>{
 			let parentId = $dlg.find('select').val();
 			let title = $.trim($dlg.find('[name=title]').val());
 			let url = $.trim($dlg.find('[name=url]').val());
@@ -133,7 +127,7 @@ const addBookmark = (parentId, callback) => {
 				url: url,
 				parentId: parentId
 			}, function(){
-				UI.showToast('Bookmark added');
+				UI.showToast(_('Bookmark added'));
 				renderTree(parentId, callback);
 			})
 		});
@@ -145,28 +139,39 @@ const addFolder = (bookmark) => {
 	Bookmark.getFolderSelection(ROOT_ID, parentId).then((folder_selection_html)=>{
 		let html = `<ul class="form-item full-item">
 					<li>${folder_selection_html}</li>
-					<li><input type="text" required name="title" placeholder="Folder Name" value=""></li>
+					<li><input type="text" required name="title" placeholder="${_('Folder Name')}" value=""></li>
 				</ul>`;
-		UI.showConfirm(`Add Sub Folder`, html).then(($dlg)=>{
+		UI.showConfirm(_(`Add Sub Folder`), html).then(($dlg)=>{
 			let title = $.trim($dlg.find('[name=title]').val());
 			let url = $.trim($dlg.find('[name=url]').val());
 			let parentId = $dlg.find('select').val();
 			Bookmark.create({title: title, url: url, parentId: parentId}, function(){
 				renderTree(parentId);
-				UI.showToast('Folder added');
+				UI.showToast(_('Folder added'));
 			});
 		});
 	});
 };
 
 const sorting = (bookmark) => {
-	let html = '<div>Sorting By:</div><ul class="sorting-conditions">';
-	html += '<li>Type: <select><option>Folder First</option><option>Link First</option><option>As Default</option></select>';
-	html += '<li>Spell: <select><option>A-Z</option><option>Z-A</option><option>As Default</option></select>';
-	html += '<li>Date: <select><option>Newer First</option><option>Older First</option><option>As Default</option></select>';
-	html += '</ul>';
-	UI.showConfirm('Sorting bookmarks', html).then(($dlg)=>{
-		UI.showToast('Bookmark sorted');
+	let parentId = bookmark ? bookmark.id : ROOT_ID;
+	let html = `<div>${_('Sorting By')}</div><ul class="sorting-conditions">`;
+	html += `<li><label>${_('Type')}:</label> <select name="type"><option value="folder" selected>${_('Folder First')}</option><option value="link">${_('Link First')}</option><option value="">${_('As Default')}</option></select>`;
+	html += `<li><label>${_('Spell or Date')}:</label> <select name="spell_date">`;
+	html += `<option value="">${_('As Default')}</option>`;
+	html += `<optgroup label="${_('Spell')}"><option value="az" selected>A-Z</option><option value="za">Z-A</option></optgroup>`;
+	html += `<optgroup label="${_('Create Date')}"><option value="newer">Newer First</option><option value="older">Older First</option></optgroup></select>`;
+	html += `<li><label title="${_('Sub folder recursive')}">${_('Recursive')}</label> <input type="checkbox" name="recursive" value="1" checked>`;
+	html += `</ul>`;
+	UI.showConfirm(_('Sorting bookmarks'), html).then(($dlg)=>{
+		Bookmark.sort(parentId, {
+			type: $dlg.find('select[name=type]').val(),
+			spell_date: $dlg.find('select[name=spell_date]').val(),
+			recursive: $dlg.find('input[name=recursive]:checked').size()
+		}).then(()=>{
+			UI.showToast(_('Bookmark sorted'));
+			renderNode(parentId);
+		});
 	});
 };
 
@@ -187,15 +192,15 @@ const openLink = (bookmark, param) => {
 
 const editLink = (bookmark) => {
 	let html = `<ul class="form-item full-item">
-					<li><input type="text" required name="title" placeholder="Title" value="${h(bookmark.title)}"></li>
-					<li><input type="url" required name="url" placeholder="Url" value="${h(bookmark.url)}"></li>
+					<li><input type="text" required name="title" placeholder="${_('Title')}" value="${h(bookmark.title)}"></li>
+					<li><input type="url" required name="url" placeholder="${_('Url')}" value="${h(bookmark.url)}"></li>
 				</ul>`;
-	UI.showConfirm(`Update Bookmark`, html).then(($dlg)=>{
+	UI.showConfirm(_(`Update Bookmark`), html).then(($dlg)=>{
 		let title = $.trim($dlg.find('[name=title]').val());
 		let url = $.trim($dlg.find('[name=url]').val());
 		Bookmark.update(bookmark.id, {title: title, url: url}).then(()=>{
 			renderNode(bookmark.id);
-			UI.showToast('Bookmark updated');
+			UI.showToast(_('Bookmark updated'));
 		});
 	});
 };
@@ -204,9 +209,9 @@ const editFolder = (bookmark) => {
 	Bookmark.getFolderSelection(ROOT_ID, bookmark.parentId, bookmark.id).then((folder_selection_html)=>{
 		let html = `<ul class="form-item full-item">
 					<li>${folder_selection_html}</li>
-					<li><input type="text" required name="title" placeholder="Folder Name" value="${h(bookmark.title)}"></li>
+					<li><input type="text" required name="title" placeholder="${_('Folder Name')}" value="${h(bookmark.title)}"></li>
 				</ul>`;
-		UI.showConfirm(`Edit Folder`, html).then(($dlg)=>{
+		UI.showConfirm(_(`Edit Folder`), html).then(($dlg)=>{
 			let title = $.trim($dlg.find('[name=title]').val());
 			let parentId = $dlg.find('select').val();
 			let sync = [];
@@ -219,7 +224,7 @@ const editFolder = (bookmark) => {
 			if(sync.length){
 				Promise.all(sync).then(()=>{
 					renderNode(bookmark.id);
-					UI.showToast('Folder updated');
+					UI.showToast(_('Folder updated'));
 				});
 			}
 		});
@@ -233,7 +238,7 @@ const cleanupFolder = (bookmark) => {
 		let folders_to_merge = Bookmark.foundMergeFolders(plain_items);
 		let html = '';
 		if(empty_nodes.length){
-			html += '<div>Empty folders found:</div>';
+			html += `<div>${_('Empty folders found')}:</div>`;
 			html += `<ul style="max-height:100px; overflow-y:scroll;">`;
 			empty_nodes.forEach((item) => {
 				html += `<li><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.parentTitle)} / <span class="iconfont icon-fold">${h(item.title)}</span> </li>`;
@@ -241,7 +246,7 @@ const cleanupFolder = (bookmark) => {
 			html += `</ul>`;
 		}
 		if(folders_to_merge.length){
-			html += '<div>Same name folders to merge:</div>';
+			html += `<div>${_('Same name folders to merge')}:</div>`;
 			html += '<ul style="max-height:200px; overflow-y:auto;">';
 			folders_to_merge.forEach((tmp) => {
 				let [item, to_id] = tmp;
@@ -251,10 +256,10 @@ const cleanupFolder = (bookmark) => {
 		}
 
 		if(!html){
-			UI.showAlert('Clean up folders', 'No empty bookmark folders found.');
+			UI.showAlert(_('Clean up folders'), _('No empty bookmark folders found'));
 			return;
 		}
-		UI.showConfirm('Clean up folders', html).then(($dlg)=>{
+		UI.showConfirm(_('Clean up folders'), html).then(($dlg)=>{
 			$dlg.find('input[name=deletes]:checked').each(function(){
 				Bookmark.remove(this.value);
 			});
@@ -276,18 +281,18 @@ const cleanupItem = (bookmark) => {
 	Bookmark.getSubTree(parentId, function(plain_items){
 		let same_url_nodes = Bookmark.foundSameUrlNodes(plain_items);
 		if(!same_url_nodes.length){
-			UI.showAlert('Clean up item', 'No duplicate bookmark items found.');
+			UI.showAlert(_('Clean up item'), _('No duplicate bookmark items found'));
 			return;
 		}
 
 		let html = '';
-		html += '<div>Duplicate bookmark found:</div>';
+		html += `<div>${_('Duplicate bookmark found')}:</div>`;
 		html += `<ul style="max-height:200px; overflow-y:auto;">`;
 		same_url_nodes.forEach((item) => {
 			html += `<li><label><input type="checkbox" name="deletes" value="${item.id}" checked> ${h(item.title)}</label></li>`;
 		});
 		html += '</ul>';
-		UI.showConfirm('Clean up item', html).then(($dlg)=>{
+		UI.showConfirm(_('Clean up item'), html).then(($dlg)=>{
 			$dlg.find('input[name=deletes]:checked').each(function(){
 				Bookmark.remove(this.value);
 			});
@@ -306,21 +311,21 @@ const remove404 = (id = ROOT_ID) => {
 		});
 		let total = links.length;
 		let html =
-			`<div class="bookmark-checking-timeout">Timeout: <input type="number" name="timeout" value="8" min="1" step="1"> Sec</div>
+			`<div class="bookmark-checking-timeout">${_('Timeout')}: <input type="number" name="timeout" value="8" min="1" step="1"> ${_('Sec')}</div>
 				<div class="bookmark-checking run-info">
-					Progress: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
+					${_('Progress')}: <span class="cnt">0</span> / ${total} <span class="percent">0%</span>
 					<progress max="${total}" value="0"></progress>
-					<span class="current-site" style="display:none;">Checking: <a href="" target="_blank"></a></span>
+					<span class="current-site" style="display:none;">${_('Checking')}: <a href="" target="_blank"></a></span>
 				</div>`;
 
 		html += `<ul class="bookmark-checking-result-list" style="display:none;">`;
 		html += '</ul>';
-		let op_html = `<span tabindex="0" class="btn btn-primary btn-start iconfont icon-start">Start Check</span>`;
-		op_html += `<span tabindex="0" class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">Stop</span>`;
-		op_html += `<span tabindex="0" class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">Remove Selection</span>`;
-		op_html += '<span tabindex="0" class="btn btn-outline btn-close">Close</span>';
+		let op_html = `<span tabindex="0" class="btn btn-primary btn-start iconfont icon-start">${_('Start Check')}</span>`;
+		op_html += `<span tabindex="0" class="btn btn-outline btn-stop iconfont icon-stop" style="display:none;">${_('Stop')}</span>`;
+		op_html += `<span tabindex="0" class="btn btn-outline btn-deletes iconfont icon-trash" style="display:none;">${_('Remove Selection')}</span>`;
+		op_html += `<span tabindex="0" class="btn btn-outline btn-close">${_('Close')}</span>`;
 
-		UI.showDialog('Remove 404', html, op_html, function($dlg){
+		UI.showDialog(_('Remove 404'), html, op_html, function($dlg){
 			let $progress = $dlg.find('progress');
 			let $cnt = $dlg.find('.cnt');
 			let $percent = $dlg.find('.percent');
@@ -350,10 +355,10 @@ const remove404 = (id = ROOT_ID) => {
 				let $inputs = $error_list.find('input[name=fails]');
 				let count = $inputs.size();
 				if(!count){
-					alert('No item selected');
+					alert(_('No item selected'));
 					return;
 				}
-				if(confirm('Confirm to remove ' + count + ' bookmarks?')){
+				if(confirm(_('Confirm to remove bookmarks', [count]))){
 					$inputs.each(function(){
 						Bookmark.remove(this.value);
 					});
@@ -410,10 +415,6 @@ const remove404 = (id = ROOT_ID) => {
 	}, true);
 };
 
-let a = function*() {
-
-};
-
 const renderTree = (id, callback, initLevel = 0) => {
 	Bookmark.getSubTree(id, function(items){
 		let html = getTreeHtml(items, initLevel, INIT_COLLAPSED_LEVEL);
@@ -433,9 +434,22 @@ const show_menu = ($li, [x, y]) => {
 	if(!show_menu.$context){
 		show_menu.$context = $(`<div class="context-menu context-menu-with-point"></div>`).appendTo('body');
 	}
-	show_menu.$context.html($li.find('.drop-list dd').html()).css({left: x, top: y}).show();
+	let menu_html = $li.find('.ops-menu').html();
+	show_menu.$context.html(menu_html).show();
+	adjust_pos(x, y, show_menu.$context);
 	$tree.find('.' + CLASS_ITEM).removeClass(CLASS_FOCUS);
 	$li.find('.' + CLASS_ITEM).eq(0).addClass(CLASS_FOCUS);
+};
+
+const adjust_pos = (x, y, $menu)=>{
+	let vh = window.innerHeight, vw = window.innerWidth;
+	let w = $menu.outerWidth(), h = $menu.outerHeight();
+	let pos_x = Math.min(vw - w, x);
+	let pos_y = Math.min(vh - h - 10, y);
+	$menu.css({
+		left: pos_x,
+		top: pos_y
+	});
 };
 
 const hide_menu = ()=>{
@@ -445,8 +459,37 @@ const hide_menu = ()=>{
 	}
 };
 
+//i18n
+const getTextNode = (node)=>{
+	let all = [];
+	for(node = node.firstChild; node; node = node.nextSibling){
+		if(node.nodeType === 3) all.push(node);
+		else all = all.concat(getTextNode(node));
+	}
+	return all;
+};
+
+const Actions = {
+	addBookmark: addBookmark,
+	sorting: sorting,
+	remove404: remove404,
+	cleanupFolder: cleanupFolder,
+	cleanupItem: cleanupItem,
+	addFolder: addFolder,
+	openLink: openLink,
+	openFolder:openFolder,
+	editLink: editLink,
+	editFolder: editFolder,
+	removeFolder: removeFolder,
+	removeLink: removeLink
+};
+
 $body.click(function(e){
-	if(show_menu.$context && ($.contains(show_menu.$context[0], e.target) || show_menu.$context[0] === e.target)){
+	if(show_menu.$context && (
+		$.contains(show_menu.$context[0], e.target) ||
+		show_menu.$context[0] === e.target ||
+		$(e.target).hasClass('item-operator-trigger')
+	)){
 		//click on context menu
 	}else{
 		hide_menu();
@@ -469,20 +512,9 @@ $tree.delegate('.fold', 'click', function(){
 	$item.find('li').addClass('collapsed');
 });
 
-const Actions = {
-	addBookmark: addBookmark,
-	sorting: sorting,
-	remove404: remove404,
-	cleanupFolder: cleanupFolder,
-	cleanupItem: cleanupItem,
-	addFolder: addFolder,
-	openLink: openLink,
-	openFolder:openFolder,
-	editLink: editLink,
-	editFolder: editFolder,
-	removeFolder: removeFolder,
-	removeLink: removeLink
-};
+$tree.delegate('.item-operator-trigger', 'click', function(e){
+	show_menu($(this).closest('li'), [e.clientX, e.clientY]);
+});
 
 //operate even binding
 $body.delegate('[data-cmd]', 'click', function(){
@@ -497,7 +529,7 @@ $body.delegate('[data-cmd]', 'click', function(){
 
 	let callAction = (act, item, param) => {
 		if(!Actions[act]){
-			throw "No action found";
+			throw _("No action found");
 		}
 		Actions[act](item, param);
 		hide_menu();
@@ -511,18 +543,29 @@ $body.delegate('[data-cmd]', 'click', function(){
 	}
 });
 
-renderTree(ROOT_ID, function(){
-	const check_action = () => {
-		let action = Util.getParam('act');
-		if(!action){
-			return;
+I18N.loadLanguageFile(I18N.getCurrentLanguage()).then(()=>{
+	getTextNode(document.body).forEach(node => {
+		let v = node.nodeValue;
+		let text = v.replace(/{([^{]+)}/ig, (matches, org_text) => {
+			return I18N._(org_text);
+		});
+		if(text.length){
+			node.nodeValue = text;
 		}
-		if(!Actions[action]){
-			throw "No action founds";
-		}
-		Actions[action]();
-		Util.removeHash();
-	};
-	window.onhashchange = check_action;
-	check_action();
-}, 0);
+	});
+	renderTree(ROOT_ID, function(){
+		const check_action = () => {
+			let action = Util.getParam('act');
+			if(!action){
+				return;
+			}
+			if(!Actions[action]){
+				throw _("No action founds");
+			}
+			Actions[action]();
+			Util.removeHash();
+		};
+		window.onhashchange = check_action;
+		check_action();
+	}, 0);
+});

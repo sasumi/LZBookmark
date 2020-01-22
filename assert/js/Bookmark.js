@@ -8,7 +8,7 @@ class Bookmark {
 	static OPEN_NEW_WIN = 'NewWin';
 	static OPEN_INC_WIN = 'IncWin';
 
-	static getParentTitlePath = (item ,all_map)=>{
+	static getParentTitlePath(item ,all_map){
 		let parent_title = [];
 		while(item && all_map[item.parentId]){
 			item = all_map[item.parentId];
@@ -17,7 +17,7 @@ class Bookmark {
 		return parent_title.reverse();
 	};
 
-	static convertPlain = (nodes) => {
+	static convertPlain(nodes){
 		let ret = [];
 		Util.arrayWalkRecursive(nodes, function(item){
 			let data = {
@@ -42,7 +42,7 @@ class Bookmark {
 		return ret;
 	};
 
-	static foundEmptyFolders = (plain_items) => {
+	static foundEmptyFolders(plain_items){
 		let ret = [];
 		plain_items.forEach((item)=>{
 			if(item.children_count === 0 && !item.url){
@@ -52,7 +52,7 @@ class Bookmark {
 		return ret;
 	};
 
-	static foundSameUrlNodes = (plain_items)=>{
+	static foundSameUrlNodes(plain_items){
 		let ret = [];
 		let map = {};
 		plain_items.forEach((item)=>{
@@ -73,7 +73,7 @@ class Bookmark {
 	 * @param plain_items
 	 * @returns {[]}
 	 */
-	static foundMergeFolders = (plain_items)=>{
+	static foundMergeFolders(plain_items){
 		let ret = [];
 		let last_level = 0;
 		let tmp_titles = {};
@@ -97,7 +97,87 @@ class Bookmark {
 		return ret;
 	};
 
-	static getFolderSelection = (rootId, parentId, currentId)=>{
+	/**
+	 * sort bookmark
+	 * @param id
+	 * @param option
+	 * @returns {Promise<>}
+	 */
+	static sort(id, option){
+		console.log('Sorting bookmark', id, option);
+		let sortByFolder = (items, dir)=>{
+			if(!dir){
+				return items;
+			}
+			items.sort((item1, item2)=>{
+				let t1 = Bookmark.isFolder(item1);
+				let t2 = Bookmark.isFolder(item2);
+				if((t1 && t2) || (!t1 && !t2)){
+					return 0;
+				}
+				if(dir === 'folder'){
+					return t1 ? -1 : 1;
+				} else {
+					return t1 ? 1 : -1;
+				}
+			});
+			return items;
+		};
+
+		let sortBySpellOrDate = (items, dir, keepFolder)=>{
+			if(!dir){
+				return items;
+			}
+			items.sort((item1, item2)=>{
+				let t1 = Bookmark.isFolder(item1);
+				let t2 = Bookmark.isFolder(item2);
+				if(keepFolder && t1 ^ t2){
+					return 0;
+				}
+				if(dir === 'az'){
+					return item1.title < item2.title ? -1 : 1;
+				} else if(dir === 'za') {
+					return item1.title < item2.title ? 1 : -1;
+				} else if(dir === 'newer'){
+					return item1.dateAdded < item2.dateAdded ? -1 : 1;
+				} else if(dir === 'older'){
+					return item1.dateAdded < item2.dateAdded ? 1 : -1;
+				}
+			});
+			return items;
+		};
+
+		return new Promise((resolve => {
+			Bookmark.getChildren(id).then(items => {
+				let calls = [];
+				if(option.recursive){
+					items.forEach((item)=>{
+						if(Bookmark.isFolder(item)){
+							calls.push(Bookmark.sort(item.id, option));
+						}
+					});
+				}
+				items = sortByFolder(items, option.type);
+				items = sortBySpellOrDate(items, option.spell_date, option.type);
+				items.forEach((item, idx) => {
+					calls.push(Bookmark.move(item.id, {index: idx}));
+				});
+				let all_move = Promise.all(calls);
+				all_move.then(() => {
+					resolve();
+				})
+			});
+		}));
+	}
+
+	/**
+	 * get folder selection
+	 * @param rootId
+	 * @param parentId
+	 * @param currentId
+	 * @returns {Promise<String>}
+	 */
+	static getFolderSelection(rootId, parentId, currentId){
 		return new Promise((resolve)=>{
 			Bookmark.getSubTree(rootId, function(plain_items){
 				let html = '<select>';
@@ -121,7 +201,7 @@ class Bookmark {
 
 	};
 
-	static getType = (item)=>{
+	static getType(item){
 		return item.url ? this.TYPE_LINK : this.TYPE_FOLDER;
 	};
 
@@ -139,9 +219,9 @@ class Bookmark {
 		return chrome.bookmarks.get(idList, callback);
 	}
 
-	static getChildren(id, callback, asPlain = false){
-		return chrome.bookmarks.getChildren(id + '', function(items){
-			callback(asPlain ? Bookmark.convertPlain(items) : items);
+	static getChildren(id){
+		return new Promise(resolve => {
+			chrome.bookmarks.getChildren(id + '', resolve)
 		});
 	}
 
@@ -169,6 +249,7 @@ class Bookmark {
 
 	static move(id, destination){
 		return new Promise(resolve=>{
+			console.log('moving bookmark', id, destination);
 			chrome.bookmarks.move(id + '', destination, resolve);
 		});
 	}

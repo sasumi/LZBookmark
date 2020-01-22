@@ -57,6 +57,16 @@ class Util {
 		});
 	}
 
+	static getURL(path){
+		return chrome.extension.getURL(path);
+	}
+
+	static _(message, param = []){
+		let nt = chrome.i18n.getMessage(message, param);
+		console.log('translate:', message, 'result:', nt);
+		return nt || message;
+	}
+
 	/**
 	 * get param
 	 * @param param

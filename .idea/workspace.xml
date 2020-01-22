@@ -3,10 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="b28256c7-71f4-4339-831e-c724fc92808c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/assert/css/form.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/form.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/com.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/com.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/global.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/global.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/css/popup.css" beforeDir="false" afterPath="$PROJECT_DIR$/assert/css/popup.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assert/js/Bookmark.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Bookmark.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/UI.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/UI.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/Util.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/Util.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/assert/js/popup.js" beforeDir="false" afterPath="$PROJECT_DIR$/assert/js/popup.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/options.html" beforeDir="false" afterPath="$PROJECT_DIR$/options.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/popup.html" beforeDir="false" afterPath="$PROJECT_DIR$/popup.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -47,11 +51,14 @@
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\htdocs\bookmark\assert\js" />
+      <recent name="D:\htdocs\bookmark\_locales" />
       <recent name="D:\htdocs\bookmark\assert\img" />
       <recent name="D:\htdocs\bookmark" />
       <recent name="D:\htdocs\bookmark\assert\css" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\htdocs\bookmark\_locales" />
+      <recent name="D:\htdocs\bookmark\_locales\zh_CN" />
       <recent name="D:\htdocs\bookmark" />
       <recent name="D:\htdocs\bookmark\assert\css" />
       <recent name="D:\htdocs\bookmark\assert\img" />
@@ -88,6 +95,10 @@
       <workItem from="1578477210894" duration="2580000" />
       <workItem from="1578529935043" duration="16334000" />
       <workItem from="1578616170657" duration="4670000" />
+      <workItem from="1578995718334" duration="589000" />
+      <workItem from="1579048634935" duration="1528000" />
+      <workItem from="1579591546394" duration="8211000" />
+      <workItem from="1579654132717" duration="14356000" />
     </task>
     <servers />
   </component>
